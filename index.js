@@ -2,7 +2,7 @@ var express = require('express');
 var cors = require('cors');
 var app = express();
 
-app.set('port', 5001);
+app.set('port',  (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/backend/public'));
 
