@@ -10,6 +10,10 @@ app.use(express.static(__dirname + '/backend/public'));
 app.set('views', __dirname + '/backend/views');
 app.set('view engine', 'ejs');
 
+var corsOptions = {
+  origin: ['http://localhost:5001', 'https://passat.herokuapp.com'],
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
 
 function testJson(response) {
   console.log("Request handler random was called.");
@@ -24,7 +28,7 @@ function testJson(response) {
   response.end(json);
 }
 
-app.get('/test', cors(), function(request, response) {
+app.get('/test', cors(corsOptions), function(request, response) {
   testJson(response)
 });
 
