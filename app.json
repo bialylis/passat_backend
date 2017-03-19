@@ -1,0 +1,8 @@
+{
+  "name": "Pass@",
+  "description": "An open source team password manager",
+  "repository": "https://github.com/bialylis/passat",
+  // "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["team", "password", "manager"],
+  // "image": "heroku/nodejs"
+}
