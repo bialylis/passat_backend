@@ -4,6 +4,7 @@ function initalizeUserAccountTable(err, client) {
   		response.send(err);
   	}else {
 	  	client.query(`CREATE TABLE IF NOT EXISTS user_account (
+	  		user_id int NOT NULL AUTO_INCREMENT,  
 	  		username varchar(100) NOT NULL,  
 	  		password varchar(200) NOT NULL,  
 	  		email varchar(250) NOT NULL,
