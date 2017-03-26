@@ -18,13 +18,13 @@ var register = {
     }
 
     // Fire a query to your DB and check if the credentials are valid
-    var response = auth.validate(username, password);
+    var response = register.validate(username, password);
    
     if (!response) { // If authentication fails, we send a 401 back
       res.status(401);
       res.json({
         "status": 401,
-        "message": "Invalid credentials 2"
+        "message": "Invalid credentials"
       });
       return;
     }
@@ -34,7 +34,7 @@ var register = {
       // If authentication is success, we will generate a token
       // and dispatch it to the client
 
-      res.json(genToken(response));
+      res.json(response);
     }
 
   },
