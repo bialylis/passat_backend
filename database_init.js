@@ -14,7 +14,7 @@ function initalizeUserAccountTable(err, client) {
 	  		)`, function(err, result) {
 	      if (err)
 	       { 
-	       		console.error(err); response.send("Error " + err); 
+	       		console.error(err);  
 	       }  
 	    });
 
