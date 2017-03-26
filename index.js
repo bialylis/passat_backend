@@ -2,37 +2,30 @@ var express = require('express');
 var cors = require('cors');
 var app = express();
 var db_init = require('./database_init.js')
+var auth = require('./routes/auth.js');
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 
 
 app.set('port',  (process.env.PORT || 5000));
 
-app.use(express.static(__dirname + '/backend/public'));
+// app.use(express.static(__dirname + '/backend/public'));
 
 // views is directory for all template files
-app.set('views', __dirname + '/backend/views');
-app.set('view engine', 'ejs');
+// app.set('views', __dirname + '/backend/views');
+// app.set('view engine', 'ejs');
 
 var corsOptions = {
   origin: ['http://localhost:5001', 'https://passat.herokuapp.com'],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-function testJson(response) {
-  console.log("Request handler random was called.");
-  response.writeHead(200, {"Content-Type": "application/json"});
-  var otherArray = ["TestName", "TestTime"];
-  var otherObject = { item1: "test1", item2: new Date() };
-  var json = JSON.stringify({ 
-    anObject: otherObject, 
-    anArray: otherArray, 
-    another: "item"	
-  });
-  response.end(json);
-}
+var routes = require('./routes');
+app.all('/auth/*', [require('./middlewares/validateRequest')]);
+app.use('/', routes);
+// app.use('/login', auth.login);
 
-app.get('/test', cors(corsOptions), function(request, response) {
-  testJson(response)
-});
 
 var pg = require('pg');
 app.get('/db', function (request, response) {
