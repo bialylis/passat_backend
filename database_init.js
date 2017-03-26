@@ -4,14 +4,13 @@ function initalizeUserAccountTable(err, client) {
   		response.send(err);
   	}else {
 	  	client.query(`CREATE TABLE IF NOT EXISTS user_account (
-	  		user_id int NOT NULL AUTO_INCREMENT,  
+	  		user_id bigserial primary key,  
 	  		username varchar(100) NOT NULL,  
 	  		password varchar(200) NOT NULL,  
 	  		email varchar(250) NOT NULL,
 	  		salt varchar(50),
 	  		hash_algorithm varchar(50),
 	  		verified BOOLEAN NOT NULL DEFAULT '0',
-	  		PRIMARY KEY (user_id)  
 	  		)`, function(err, result) {
 	      if (err)
 	       { 
