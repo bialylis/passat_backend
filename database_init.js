@@ -1,7 +1,6 @@
-function initalizeUserAccountTable(err, client) {
+function initalizeUserAccountTable(err, client, done) {
   	if (err) {
   		console.error(err);
-  		response.send(err);
   	}else {
 	  	client.query(`CREATE TABLE IF NOT EXISTS user_account (
 	  		user_id bigserial primary key,  
@@ -10,28 +9,21 @@ function initalizeUserAccountTable(err, client) {
 	  		email varchar(250) NOT NULL,
 	  		salt varchar(50),
 	  		hash_algorithm varchar(50),
-	  		verified BOOLEAN NOT NULL DEFAULT '0',
-	  		)`, function(err, result) {
-	      if (err)
-	       { 
-	       		console.error(err);  
-	       }  
-	    });
+	  		verified BOOLEAN NOT NULL DEFAULT '0'
+	  		);`, function(err, result) {
+	  			done();
+	     	 	if (err)
+	       		{	 
+	       			console.error(err);  
+	       		}  
+	   			});
 
 	  }
 	}
 
-function connect_and_init(pg) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-  	if (err) {
-  		console.error(err);
-  	}else {
-	  	initalizeUserAccountTable(err, client)
+function connect_and_init(client, done) {
+  	 initalizeUserAccountTable(err, client, done);
 
-
-	  	done();
-  	}
-  });
 }
-
+module.exports.initalizeUserAccountTable = initalizeUserAccountTable;
 module.exports.connect_and_init = connect_and_init;

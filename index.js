@@ -35,7 +35,6 @@ app.get('/test', cors(corsOptions), function(request, response) {
 });
 
 var pg = require('pg');
-db_init.connect_and_init(pg)
 app.get('/db', function (request, response) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
   	if (err) {
