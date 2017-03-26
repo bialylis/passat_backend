@@ -1,6 +1,8 @@
 var express = require('express');
 var cors = require('cors');
 var app = express();
+var db_init = require('./database_init.js')
+
 
 app.set('port',  (process.env.PORT || 5000));
 
@@ -33,13 +35,14 @@ app.get('/test', cors(corsOptions), function(request, response) {
 });
 
 var pg = require('pg');
+db_init.connect_and_init(pg)
 app.get('/db', function (request, response) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
   	if (err) {
   		console.error(err);
   		response.send(err);
   	}else {
-	  	client.query('SELECT * FROM test_table', function(err, result) {
+	  	client.query('SELECT * FROM user_account', function(err, result) {
 	      done();
 	      if (err)
 	       { console.error(err); response.send("Error " + err); }
