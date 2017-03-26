@@ -5,7 +5,7 @@ var register = {
   register: function(req, res) {
 
 
-    var username = req.body.login || '';
+    var username = req.body.username || '';
     var password = req.body.password || '';
 
     if (username == '' || password == '') {
