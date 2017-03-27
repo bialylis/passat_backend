@@ -23,7 +23,7 @@ var corsOptions = {
 app.use(cors());
 
 var routes = require('./routes');
-app.all('/auth/*', [require('./middlewares/validateRequest')]);
+app.use('/auth/*', [require('./middlewares/validateRequest')]);
 app.use('/', routes);
 // app.use('/login', auth.login);
 
