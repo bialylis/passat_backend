@@ -50,6 +50,7 @@ var auth = {
   },
 
   validateUser: function(username) {
+    console.log(username)
     // spoofing the DB response for simplicity
     var dbUserObj = { // spoofing a userobject from the DB. 
       username: 'arvind',
@@ -64,7 +65,8 @@ var auth = {
 function genToken(user) {
   var expires = expiresIn(7); // 7 days
   var token = jwt.encode({
-    exp: expires
+    exp: expires,
+    user: user
   }, require('../config/secret')());
 
   return {

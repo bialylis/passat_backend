@@ -20,6 +20,7 @@ var corsOptions = {
   origin: ['http://localhost:5001', 'https://passat.herokuapp.com'],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
+app.use(cors());
 
 var routes = require('./routes');
 app.all('/auth/*', [require('./middlewares/validateRequest')]);

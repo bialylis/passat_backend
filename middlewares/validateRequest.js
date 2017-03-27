@@ -11,9 +11,8 @@ module.exports = function(req, res, next) {
   //if(req.method == 'OPTIONS') next();
 
   var token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-auth-token'];
-  var key = (req.body && req.body.x_key) || (req.query && req.query.x_key) || req.headers['x-key'];
 
-  if (token || key) {
+  if (token) {
     try {
       var decoded = jwt.decode(token, require('../config/secret.js')());
 
@@ -26,6 +25,7 @@ module.exports = function(req, res, next) {
         return;
       }
 
+      console.log(decoded)
       // Authorize the user to see if s/he can access our resources
 
       var dbUser = validateUser(key); // The key would be the logged in user's username
