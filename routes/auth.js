@@ -50,7 +50,6 @@ var auth = {
   },
 
   validateUser: function(username) {
-    console.log(username)
     // spoofing the DB response for simplicity
     var dbUserObj = { // spoofing a userobject from the DB. 
       username: 'arvind',

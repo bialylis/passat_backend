@@ -24,13 +24,12 @@ module.exports = function(req, res, next) {
         });
         return;
       }
-
       // Authorize the user to see if s/he can access our resources
 
       var dbUser = validateUser(decoded.user); // The key would be the logged in user's username
       if (dbUser) {
 
-
+        req.user = dbUser;
         next();
       } else {
         // No user with this name exists, respond back with a 401
