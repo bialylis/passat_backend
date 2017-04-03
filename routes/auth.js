@@ -12,7 +12,7 @@ var auth = {
       res.status(401);
       res.json({
         "status": 401,
-        "message": "Invalid credentials 1"
+        "message": "Invalid credentials"
       });
       return;
     }
@@ -24,7 +24,7 @@ var auth = {
       res.status(401);
       res.json({
         "status": 401,
-        "message": "Invalid credentials 2"
+        "message": "Invalid credentials"
       });
       return;
     }

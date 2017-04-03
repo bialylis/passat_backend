@@ -28,7 +28,13 @@ var groups = {
     var user = req.user
 
     var newgroup = req.body;
-    newgroup['id'] = data.length 
+    var maxid = 0;
+    for(var i=0; i<data.length; i++){
+        if (data[i].id > maxid) {
+          maxid = data[i].id;
+        }
+    }
+    newgroup['id'] = maxid+1; 
 
     data.push(newgroup); // Spoof a DB call
     res.json(newgroup);
@@ -39,37 +45,47 @@ var groups = {
 
     var updategroup = req.body;
     var id = req.params.id;
-    if (data[id]!=null) {
-          data[id] = updategroup // Spoof a DB call
+    for(var i = 0; i<data.length; i++){
+      if (data[i].id == id) {
+          data[i] = updategroup // Spoof a DB call
           res.json(updategroup);
-    }else {
-        res.status(400);
-        res.json({
-          "status": 400,
-          "message": "No such group"
-        });
-
+          return;
+      }
     }
+    
+    res.status(400);
+    res.json({
+      "status": 400,
+      "message": "No such group"
+    });
+
+    
   },
 
   delete: function(req, res) {
     var user = req.user
-
     var id = req.params.id;
-    data.splice(id, 1) // Spoof a DB call
+
+    for(var i = 0; i<data.length; i++){
+      if (data[i].id == id) {
+         data.splice(i, 1) // Spoof a DB call
+      }
+    }
+    
+
     res.json(true);
   }
 };
 
 var data = [{
-  name: 'user 1',
-  id: '0'
+  name: 'group 1',
+  id: 0
 }, {
-  name: 'user 2',
-  id: '1'
+  name: 'group 2',
+  id: 1
 }, {
-  name: 'user 3',
-  id: '2'
+  name: 'group 3',
+  id: 2
 }];
 
 module.exports = groups;
