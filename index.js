@@ -35,13 +35,14 @@ app.get('/db', function (request, response) {
   		console.error(err);
   		response.send(err);
   	}else {
-	  	client.query('SELECT * FROM user_account', function(err, result) {
+        db_init.connect_and_init(err, client, done);
+	  	/*client.query('SELECT * FROM user_account', function(err, result) {
 	      done();
 	      if (err)
 	       { console.error(err); response.send("Error " + err); }
 	      else
 	       { response.render('pages/db', {results: result.rows} ); }
-	    });
+	    });*/
 
   	}
   });
