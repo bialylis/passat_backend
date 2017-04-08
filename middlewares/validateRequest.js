@@ -25,21 +25,22 @@ module.exports = function(req, res, next) {
         return;
       }
       // Authorize the user to see if s/he can access our resources
+      var client = req.app.get('db');
 
-      var dbUser = validateUser(decoded.user); // The key would be the logged in user's username
-      if (dbUser) {
-
-        req.user = dbUser;
-        next();
-      } else {
-        // No user with this name exists, respond back with a 401
-        res.status(401);
-        res.json({
-          "status": 401,
-          "message": "Invalid User"
-        });
-        return;
-      }
+      validateUser(decoded.user, client, function(dbUser){
+          if (dbUser) {
+            req.user = dbUser;
+            next();
+          } else {
+            // No user with this name exists, respond back with a 401
+            res.status(401);
+            res.json({
+              "status": 401,
+              "message": "Invalid User"
+            });
+            return;
+          }
+      }); // The key would be the logged in user's username
 
     } catch (err) {
       res.status(500);

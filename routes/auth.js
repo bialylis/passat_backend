@@ -16,47 +16,64 @@ var auth = {
       });
       return;
     }
+    var client = req.app.get('db');
+    // console.log("client");
 
     // Fire a query to your DB and check if the credentials are valid
-    var dbUserObj = auth.validate(username, password);
+    auth.validate(username, password, client, function(dbUserObj){
+      // console.log("validate");
+      if (!dbUserObj) { // If authentication fails, we send a 401 back
+        res.status(401);
+        res.json({
+          "status": 401,
+          "message": "Invalid credentials"
+        });
+        return;
+      }
+
+      if (dbUserObj) {
+        res.json(genToken(dbUserObj));
+      }
+
+    });
    
-    if (!dbUserObj) { // If authentication fails, we send a 401 back
-      res.status(401);
-      res.json({
-        "status": 401,
-        "message": "Invalid credentials"
-      });
-      return;
-    }
-
-    if (dbUserObj) {
-
-      // If authentication is success, we will generate a token
-      // and dispatch it to the client
-
-      res.json(genToken(dbUserObj));
-    }
 
   },
 
-  validate: function(username, password) {
-    // spoofing the DB response for simplicity
-    var dbUserObj = { // spoofing a userobject from the DB. 
-      username: 'arvind',
-      email: 'arvind@myapp.com'
-    };
+  validate: function(username, password, client, next) {
 
-    return dbUserObj;
+    var query = client.query("SELECT * FROM user_account WHERE username = ($1) AND password = ($2) LIMIT 1", [username, password])
+
+    query.on('error', function(result){
+      console.log("sql error " + result);
+      next(null);
+    });
+
+    query.on('row', function(result){
+        next(result);
+    });
+    query.on('end', function(result) {
+      if (result.rowCount != 1) {
+        next(null);
+      }
+    })
+
   },
 
-  validateUser: function(username) {
-    // spoofing the DB response for simplicity
-    var dbUserObj = { // spoofing a userobject from the DB. 
-      username: 'arvind',
-      email: 'arvind@myapp.com'
-    };
+  validateUser: function(userid, client, next) {
 
-    return dbUserObj;
+    var query = client.query("SELECT * FROM user_account WHERE user_id = ($1) LIMIT 1", [userid])
+    query.on('error', function(result){
+        next(null)
+    })
+    query.on('row', function(result){
+        next(result);
+    })
+    query.on('end', function(result){
+      if (result.rowCount != 1) {
+        next(null)
+      }
+    })
   },
 }
 
@@ -65,7 +82,7 @@ function genToken(user) {
   var expires = expiresIn(7); // 7 days
   var token = jwt.encode({
     exp: expires,
-    user: user
+    user: user['user_id']
   }, require('../config/secret')());
 
   return {
