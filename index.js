@@ -29,28 +29,20 @@ app.use('/', routes);
 
 
 var pg = require('pg');
-app.get('/db', function (request, response) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-  	if (err) {
-  		console.error(err);
-  		response.send(err);
-  	}else {
-        db_init.connect_and_init(err, client, done);
-	  	/*client.query('SELECT * FROM user_account', function(err, result) {
-	      done();
-	      if (err)
-	       { console.error(err); response.send("Error " + err); }
-	      else
-	       { response.render('pages/db', {results: result.rows} ); }
-	    });*/
+pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  if (err) {
+    console.error(err);
+  }else {
+      db_init.connect_and_init(err, client, done);
 
-  	}
-  });
+      app.set('db', client);
+
+      app.listen(app.get('port'), function() {
+        console.log('Node app is running on port', app.get('port'));
+      });
+
+  }
 });
 
 
-
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
 
