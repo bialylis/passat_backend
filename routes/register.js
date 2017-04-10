@@ -67,6 +67,7 @@ var register = {
     var query = client.query("SELECT * FROM user_account WHERE username = ($1) OR email = ($2)", [username, email])
 
     query.on('end', function(result) {
+        console.log("end")
         if (result.rowCount > 0) {
           done(null);
           return;
@@ -74,6 +75,7 @@ var register = {
         register.insert(username, password, email, client, done);
     })
     query.on('error', function(result){
+      console.log("error")
       done(null)
     })
   },
