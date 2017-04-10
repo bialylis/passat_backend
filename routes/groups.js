@@ -7,7 +7,7 @@ var groups = {
     var query = client.query(`SELECT * FROM "group" WHERE admin = ($1)
                                 UNION
                                SELECT group_id, name, admin, secret_word FROM "group" INNER JOIN membership ON "group".group_id = membership."group"
-                                WHERE membership.member = ($1) AND membership.accepted = TRUE`, [user.user_id]);
+                                WHERE membership.member = ($1) AND membership.accepted = TRUE`, [user]);
     query.on('end', function(result){
         if ( result.rowCount > 0) {
             res.json(result)
@@ -47,7 +47,7 @@ var groups = {
     var user = req.user
 
     var newgroup = req.body;
-    var query = client.query(`INSERT INTO "group" (name, admin, secret_word) VALUES ($1, $2)`, [newgroup.name ,user.user_id, newgroup.secret_word]);
+    var query = client.query(`INSERT INTO "group" (name, admin, secret_word) VALUES ($1, $2)`, [newgroup.name ,user, "secret"]);
       query.on('end', function(result) {
           var response = {
               success: 'true'
@@ -65,7 +65,7 @@ var groups = {
 
     var updategroup = req.body;
     var id = req.params.id;
-    var query = client.query(`UPDATE "group" SET name = ($1), secret_word = ($2) WHERE group_id = ($3)`, [updategroup.name, updategroup.secret_word, id]);
+    var query = client.query(`UPDATE "group" SET name = ($1), secret_word = ($2) WHERE group_id = ($3)`, [updategroup.name, "secret", id]);
       query.on('end', function(result) {
           if(result.rowCount != 1){
               res.status(400);
