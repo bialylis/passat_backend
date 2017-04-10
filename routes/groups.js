@@ -18,6 +18,11 @@ var groups = {
     })
       query.on('error', function(result){
           res.status(400)
+                  res.json({
+            'status':400,
+            "message": "Database error"
+          })
+
       })
     //var allgroups = data; // Spoof a DB call
     //test
@@ -39,6 +44,11 @@ var groups = {
     });
     query.on('row', function(result){
         res.json(result);
+                res.json({
+            'status':400,
+            "message": "Database error"
+          })
+
     })
   },
 
@@ -94,6 +104,11 @@ var groups = {
       })
       query.on('error', function(result){
             res.status(400);
+           res.json({
+            'status':400,
+            "message": "Database error"
+          })
+
       });
   },
 
@@ -109,6 +124,11 @@ var groups = {
     });
     query.on('error', function(result){
         res.status(400);
+                res.json({
+            'status':400,
+            "message": "Database error"
+          })
+
     });
   },
 };
