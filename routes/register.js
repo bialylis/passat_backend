@@ -19,10 +19,11 @@ var register = {
       });
       return;
     }
-
+    console.log("doing")
     // Fire a query to your DB and check if the credentials are valid
     register.validate(username, password, email, client, function(response){
 
+      console.log("done")
 
       if (!response) { // If authentication fails, we send a 401 back
         res.status(401);
@@ -31,9 +32,7 @@ var register = {
           "message": "Invalid credentials"
         });
         return;
-      }
-
-      if (response) {
+      }else {
         res.json(response);
       }
 
