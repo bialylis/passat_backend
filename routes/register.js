@@ -19,10 +19,11 @@ var register = {
       });
       return;
     }
-
+    console.log("doing")
     // Fire a query to your DB and check if the credentials are valid
     register.validate(username, password, email, client, function(response){
 
+      console.log("done")
 
       if (!response) { // If authentication fails, we send a 401 back
         res.status(401);
@@ -31,9 +32,7 @@ var register = {
           "message": "Invalid credentials"
         });
         return;
-      }
-
-      if (response) {
+      }else {
         res.json(response);
       }
 
@@ -68,12 +67,16 @@ var register = {
     var query = client.query("SELECT * FROM user_account WHERE username = ($1) OR email = ($2)", [username, email])
 
     query.on('end', function(result) {
+        console.log("end")
         if (result.rowCount > 0) {
           done(null);
           return;
         }
         register.insert(username, password, email, client, done);
-
+    })
+    query.on('error', function(result){
+      console.log("error")
+      done(null)
     })
   },
 
