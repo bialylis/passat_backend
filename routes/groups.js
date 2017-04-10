@@ -47,7 +47,7 @@ var groups = {
     var user = req.user
 
     var newgroup = req.body;
-    var query = client.query(`INSERT INTO "group" (name, admin, secret_word) VALUES ($1, $2)`, [newgroup.name ,user, "secret"]);
+    var query = client.query(`INSERT INTO "group" (name, admin, secret_word) VALUES ($1, $2, $3)`, [newgroup.name ,user, "secret"]);
       query.on('end', function(result) {
           var response = {
               success: 'true'
