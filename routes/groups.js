@@ -12,7 +12,13 @@ var groups = {
         if ( result.rowCount > 0) {
             res.json(result)
         }
+        else{
+            res.json([])
+        }
     })
+      query.on('error', function(result){
+          res.status(400)
+      })
     //var allgroups = data; // Spoof a DB call
     //test
     //res.json(allgroups);
