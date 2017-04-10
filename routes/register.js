@@ -50,7 +50,7 @@ var register = {
         done(response);
     });
     query.on('error', function(result){
-      done(null);
+      done("error on insert");
     });
 
 
@@ -69,7 +69,7 @@ var register = {
 
     query.on('end', function(result) {
         if (result.rowCount > 0) {
-          done(null);
+          done("error on select");
           return;
         }
         register.insert(username, password, email, client, done);
