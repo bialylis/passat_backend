@@ -1,80 +1,101 @@
 var groups = {
 
   getAll: function(req, res) {
-    var user = req.user
-    var allgroups = data; // Spoof a DB call
+    var client = req.app.get('db');
+    var user = req.user;
+
+    var query = client.query(`SELECT * FROM "group" WHERE admin = ($1)
+                                UNION
+                               SELECT * FROM "group" INNER JOIN membership ON "group".group_id = membership."group"
+                                WHERE membership.member = ($1) AND membership.accepted = TRUE`, [user.user_id]);
+    query.on('end', function(result){
+        if ( result.rowCount > 0) {
+            res.json(result)
+        }
+    })
+    //var allgroups = data; // Spoof a DB call
     //test
-    res.json(allgroups);
+    //res.json(allgroups);
   },
 
   getOne: function(req, res) {
-    var user = req.user
+    var client = req.app.get('db');
+    var user = req.user;
 
     var id = req.params.id;
-    var group = data[id]; // Spoof a DB call
-    if (group == null) {
+    var query = client.query(`SELECT * FROM "group" WHERE group_id = ($1)`, [id]);
+    query.on('error', function(result){
         res.status(400);
         res.json({
-          "status": 400,
-          "message": "No such group"
+            "status": 400,
+            "message": "No such group"
         });
-
-    }else{
-          res.json(group);
-    }
+    });
+    query.on('row', function(result){
+        res.json(result);
+    })
   },
 
   create: function(req, res) {
+    var client = req.app.get('db');
     var user = req.user
 
     var newgroup = req.body;
-    var maxid = 0;
-    for(var i=0; i<data.length; i++){
-        if (data[i].id > maxid) {
-          maxid = data[i].id;
-        }
-    }
-    newgroup['id'] = maxid+1; 
-
-    data.push(newgroup); // Spoof a DB call
-    res.json(newgroup);
+    var query = client.query(`INSERT INTO "group" (name, admin, secret_word) VALUES ($1, $2)`, [newgroup.name ,user.user_id, newgroup.secret_word]);
+      query.on('end', function(result) {
+          var response = {
+              success: 'true'
+          };
+          res.json(newgroup);
+          done(response);
+      });
+      query.on('error', function(result){
+          done(null);
+      });
   },
 
   update: function(req, res) {
-    var user = req.user
+    var client = req.app.get('db');
+    var user = req.user;
 
     var updategroup = req.body;
     var id = req.params.id;
-    for(var i = 0; i<data.length; i++){
-      if (data[i].id == id) {
-          data[i] = updategroup // Spoof a DB call
-          res.json(updategroup);
-          return;
-      }
-    }
-    
-    res.status(400);
-    res.json({
-      "status": 400,
-      "message": "No such group"
-    });
-
-    
+    var query = client.query(`UPDATE "group" SET name = ($1), secret_word = ($2) WHERE group_id = ($3)`, [updategroup.name, updategroup.secret_word, id]);
+      query.on('end', function(result) {
+          if(result.rowCount != 1){
+              res.status(400);
+              res.json({
+                  "status": 400,
+                  "message": "No such group"
+              });
+          }
+      });
+      query.on('row', function(result){
+          var response = {
+              success: 'true'
+          };
+          res.json(newgroup);
+          done(response);
+      })
+      query.on('error', function(result){
+          done(null);
+      });
   },
 
   delete: function(req, res) {
+    var client = req.app.get('db');
     var user = req.user
     var id = req.params.id;
 
-    for(var i = 0; i<data.length; i++){
-      if (data[i].id == id) {
-         data.splice(i, 1) // Spoof a DB call
-      }
-    }
-    
+    var query = client.query(`DELETE FROM "group" WHERE group_id = ($1)`, [id]);
 
-    res.json(true);
-  }
+    query.on('end', function(result){
+        res.json(true);
+    });
+    query.on('error', function(result){
+        done(null)
+    });
+  },
 };
 
 var data = [{

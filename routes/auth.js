@@ -56,6 +56,7 @@ var auth = {
       if (result.rowCount != 1) {
         next(null);
       }
+      }
     })
 
   },
