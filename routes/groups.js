@@ -47,10 +47,9 @@ var groups = {
               success: 'true'
           };
           res.json(newgroup);
-          done(response);
       });
       query.on('error', function(result){
-          done(null);
+          res.status(400);
       });
   },
 
@@ -75,10 +74,9 @@ var groups = {
               success: 'true'
           };
           res.json(newgroup);
-          done(response);
       })
       query.on('error', function(result){
-          done(null);
+            res.status(400);
       });
   },
 
@@ -93,7 +91,7 @@ var groups = {
         res.json(true);
     });
     query.on('error', function(result){
-        done(null)
+        res.status(400);
     });
   },
 };
