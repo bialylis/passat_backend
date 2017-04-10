@@ -3,6 +3,7 @@ var groups = {
   getAll: function(req, res) {
     var client = req.app.get('db');
     var user = req.user;
+    var data=[]
 
     var query = client.query(`SELECT * FROM "group" WHERE admin = ($1)
                                 UNION
@@ -10,11 +11,14 @@ var groups = {
                                 WHERE membership.member = ($1) AND membership.accepted = TRUE`, [user.user_id]);
     query.on('end', function(result){
         if ( result.rowCount > 0) {
-            res.json(result)
+            res.json(data)
         }
         else{
             res.json([])
         }
+    })
+    query.on('row', function(row){
+      data.push(row)
     })
       query.on('error', function(result){
           res.status(400)
