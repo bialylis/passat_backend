@@ -6,7 +6,7 @@ var groups = {
 
     var query = client.query(`SELECT * FROM "group" WHERE admin = ($1)
                                 UNION
-                               SELECT * FROM "group" INNER JOIN membership ON "group".group_id = membership."group"
+                               SELECT group_id, name, admin, secret_word FROM "group" INNER JOIN membership ON "group".group_id = membership."group"
                                 WHERE membership.member = ($1) AND membership.accepted = TRUE`, [user.user_id]);
     query.on('end', function(result){
         if ( result.rowCount > 0) {
