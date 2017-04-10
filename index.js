@@ -33,7 +33,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client, done) {
   if (err) {
     console.error(err);
   }else {
-      db_init.connect_and_init(err, client, done);
+      db_init.connect_and_init(err, client, function(){});
 
       app.set('db', client);
 

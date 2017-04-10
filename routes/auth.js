@@ -17,11 +17,11 @@ var auth = {
       return;
     }
     var client = req.app.get('db');
-    // console.log("client");
+    console.log("client");
 
     // Fire a query to your DB and check if the credentials are valid
     auth.validate(username, password, client, function(dbUserObj){
-      // console.log("validate");
+      console.log("validate");
       if (!dbUserObj) { // If authentication fails, we send a 401 back
         res.status(401);
         res.json({
@@ -29,9 +29,7 @@ var auth = {
           "message": "Invalid credentials"
         });
         return;
-      }
-
-      if (dbUserObj) {
+      }else {
         res.json(genToken(dbUserObj));
       }
 
