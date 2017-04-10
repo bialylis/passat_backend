@@ -7,7 +7,7 @@ var groups = {
     var query = client.query(`SELECT * FROM "group" WHERE admin = ($1)
                                 UNION
                                SELECT group_id, name, admin, secret_word FROM "group" INNER JOIN membership ON "group".group_id = membership."group"
-                                WHERE membership.member = ($1) AND membership.accepted = TRUE`, [user]);
+                                WHERE membership.member = ($1) AND membership.accepted = TRUE`, [user.user_id]);
     query.on('end', function(result){
         if ( result.rowCount > 0) {
             res.json(result)
@@ -43,19 +43,30 @@ var groups = {
   },
 
   create: function(req, res) {
+    console.log("create")
     var client = req.app.get('db');
     var user = req.user
 
     var newgroup = req.body;
-    var query = client.query(`INSERT INTO "group" (name, admin, secret_word) VALUES ($1, $2, $3)`, [newgroup.name ,user, "secret"]);
+
+
+    var query = client.query(`INSERT INTO "group" (name, admin, secret_word) VALUES ($1, $2, $3)`, [newgroup.name ,user.user_id, "secret"]);
       query.on('end', function(result) {
+            console.log("end")
+
           var response = {
               success: 'true'
           };
           res.json(newgroup);
       });
       query.on('error', function(result){
+          console.log(result)
+
           res.status(400);
+          res.json({
+            'status':400,
+            "message": "Database error"
+          })
       });
   },
 

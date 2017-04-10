@@ -29,7 +29,7 @@ app.use('/', routes);
 
 
 var pg = require('pg');
-pg.connect(process.env.DATABASE_URL || "postgres://postgres:mishcas17@localhost:5433/postgres", function(err, client, done) {
+pg.connect(process.env.DATABASE_URL, function(err, client, done) {
   if (err) {
     console.error(err);
   }else {
