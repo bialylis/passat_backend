@@ -49,11 +49,6 @@ var groups = {
     query.on('row', function(result){
         res.json(result);
         
-        res.json({
-            'status':400,
-            "message": "Database error"
-          })
-
     })
   },
 
@@ -140,15 +135,6 @@ var groups = {
   },
 };
 
-var data = [{
-  name: 'group 1',
-  id: 0
-}, {
-  name: 'group 2',
-  id: 1
-}, {
-  name: 'group 3',
-  id: 2
-}];
-
 module.exports = groups;
+
+
