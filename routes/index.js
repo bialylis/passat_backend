@@ -25,8 +25,8 @@ router.post('/auth/group/:id', groups.update);
 
 router.delete('/auth/group/:id', groups.delete);
 
-router.post('/auth/group/:id/:userid', managment.invite)
-router.delete('/auth/group/:id/:userid', managment.remove)
+router.post('/auth/group/:id/member', managment.invite)
+router.delete('/auth/group/:id/member', managment.remove)
 
 
 

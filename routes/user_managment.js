@@ -5,28 +5,39 @@ var user_managment = {
 
     	var group = req.group;
 
-    	var invited = req.params.userid;
-    	var isAdmin = group.admin == user.user_id;
+        var email = req.body.invited_email || '';
 
+    	var isAdmin = group.admin == user.user_id;
+        console.log("invite")
     	if (isAdmin) {
 
-    		var query = client.query(`INSERT INTO "membership" ("group", member, accepted) VALUES ($1, $2, $3)`, [group.group_id ,invited, true])
-    		query.on('error', function(result){
-    			console.log(result);
-	    		res.status(400);
-		        res.json({
-		            "status": 400,
-		            "message": "Can not invite user"
-		        });
-    		})
-
-    		query.on("end", function(result){
-    			res.status(200);
-    			res.json({
-    				"status": 200,
-    				"message": "User invited to the group"
-    			})
-    		})
+            getIdForEmail(client, email, function(id){
+                console.log(id)
+                if (id == null) {
+                    res.status(400);
+                    res.json({
+                        "status": 400,
+                        "message": "Can not invite user"
+                    });
+                    return;
+                }
+                var query = client.query(`INSERT INTO "membership" ("group", member, accepted) VALUES ($1, $2, $3)`, [group.group_id ,id, true])
+                query.on('error', function(result){
+                    console.log(result);
+                    res.status(400);
+                    res.json({
+                        "status": 400,
+                        "message": "Can not invite user"
+                    });
+                })
+                query.on("end", function(result){
+                    res.status(200);
+                    res.json({
+                        "status": 200,
+                        "message": "User invited to the group"
+                    })
+                })
+            })
     	}else {
 
     		res.status(401);
@@ -77,6 +88,24 @@ var user_managment = {
 
     	}
 	}
+}
+
+function getIdForEmail(client, email, next){
+    var query = client.query(`SELECT user_id FROM user_account WHERE email = $1`, [email])
+
+    query.on('error', function(result) {
+        next(null)
+    })
+
+    query.on('row', function (result) {
+        next(result.user_id)
+    })
+
+    query.on('end', function (result) {
+        if (result.rowCount == 0) {
+            next(null)
+        }
+    })
 }
 
 module.exports = user_managment;

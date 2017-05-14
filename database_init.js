@@ -46,8 +46,8 @@ function initializeMembershipTable(err, client, done) {
     }else {
         client.query(`CREATE TABLE IF NOT EXISTS membership (\
                             membership_id bigserial primary key,\
-                            "group" integer references "group"(group_id) NOT NULL,\
-                            member integer references user_account(user_id) NOT NULL,\
+                            "group" integer references "group"(group_id) ON DELETE CASCADE NOT NULL ,\
+                            member integer references user_account(user_id) ON DELETE CASCADE NOT NULL ,\
                             accepted boolean NOT NULL DEFAULT '0');`, function(err, result) {
             done();
             if (err)
