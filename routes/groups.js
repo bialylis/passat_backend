@@ -34,6 +34,7 @@ var groups = {
   },
 
   getOne: function(req, res) {
+    console.log("get One ")
     var client = req.app.get('db');
     var user = req.user;
 
@@ -56,7 +57,7 @@ var groups = {
         query2.on('row', function(result2){
             result['userList'].push(result2);
         });
-        query2.on('error', function(result){
+        query2.on('error', function(result2){
             res.status(400);
             res.json({
                 "status": 400,
@@ -64,6 +65,7 @@ var groups = {
             });
         });
         query2.on('end', function(result2){
+          console.log('end2 ' + result2)
             res.json(result);
 
         });
@@ -72,6 +74,7 @@ var groups = {
         
     })
       query.on('end', function(result){
+        console.log("end 1 " + result )
           if(result.rowCount == 0){
               res.status(400);
               res.json({
