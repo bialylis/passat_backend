@@ -38,7 +38,7 @@ var groups = {
     var user = req.user;
 
     var id = req.params.id;
-    var query = client.query(`SELECT group_id, name, admin, username as 'admin_name', secret_word FROM "group" 
+    var query = client.query(`SELECT group_id, name, admin, username, secret_word FROM "group" 
                                 INNER JOIN user_account on "group".admin = user_account.user_id
                                 WHERE group_id = ($1)`, [id]);
     query.on('error', function(result){
