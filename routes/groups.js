@@ -52,22 +52,34 @@ var groups = {
         var query2 = client.query(`SELECT user_id, username from user_account 
                                     INNER JOIN membership on user_account.user_id = membership.member
                                     WHERE membership."group" = ($1)`, [id]);
+        result['userList'] = [];
         query2.on('row', function(result2){
-            var response = JSON.stringify(result);
-            response['userList'] = result2;
-            res.json(response)
+            result['userList'].push(result2);
         });
         query2.on('error', function(result){
             res.status(400);
             res.json({
                 "status": 400,
-                "message": "No such group"
+                "message": "Database error"
             });
-        })
+        });
+        query2.on('end', function(result2){
+            res.json(result);
+
+        });
 
         //res.json(result);
         
     })
+      query.on('end', function(result){
+          if(result.rowCount == 0){
+              res.status(400);
+              res.json({
+                  "status": 400,
+                  "message": "No such group"
+              });
+          }
+      })
   },
 
   create: function(req, res) {
