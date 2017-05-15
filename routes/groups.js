@@ -38,7 +38,9 @@ var groups = {
     var user = req.user;
 
     var id = req.params.id;
-    var query = client.query(`SELECT * FROM "group" WHERE group_id = ($1)`, [id]);
+    var query = client.query(`SELECT group_id, name, admin, username as 'admin_name', secret_word FROM "group" 
+                                INNER JOIN user_account on "group".admin = user_account.user_id
+                                WHERE group_id = ($1)`, [id]);
     query.on('error', function(result){
         res.status(400);
         res.json({
@@ -47,7 +49,18 @@ var groups = {
         });
     });
     query.on('row', function(result){
-        res.json(result);
+        var query2 = client.query(`SELECT user_id, username from user_account 
+                                    INNER JOIN membership on user_account.user_id = membership.member
+                                    WHERE membership."group" = ($1)`, [id]);
+        query2.on('row', function(result2){
+            var response = {
+                group: result,
+                userList: result2
+            };
+
+            res.json(response)
+        })
+        //res.json(result);
         
     })
   },
@@ -133,6 +146,7 @@ var groups = {
 
     });
   },
+
 };
 
 module.exports = groups;

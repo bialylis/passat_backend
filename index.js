@@ -17,7 +17,7 @@ app.set('port',  (process.env.PORT || 5000));
 // app.set('view engine', 'ejs');
 
 var corsOptions = {
-  origin: ['http://localhost:5001', 'https://passat.herokuapp.com'],
+  origin: ['http://localhost:5001'], //'https://passat.herokuapp.com'],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 app.use(cors());
@@ -30,7 +30,7 @@ app.use('/', routes);
 
 var pg = require('pg');
 //| "postgres://localhost:5432"
-pg.connect(process.env.DATABASE_URL , function(err, client, done) {
+pg.connect("postgres://postgres:mishcas17@localhost:5433/postgres" || process.env.DATABASE_URL , function(err, client, done) {
   if (err) {
     console.error(err);
   }else {

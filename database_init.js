@@ -17,7 +17,6 @@ function initializeUserAccountTable(err, client, done) {
                 console.error(err);
             }
         });
-
     }
 }
 
