@@ -17,7 +17,6 @@ router.get('/auth/secret', secret.get);
 router.use('/auth/group/:id', [require('../middlewares/validateUserRole.js')]);
 
 router.get('/auth/group', groups.getAll);
-console.log("WTF")
 router.get('/auth/group/:id', groups.getOne);
 
 
