@@ -57,7 +57,7 @@ var groups = {
             result['userList'] = result2;
             res.json(response)
         })
-        
+
         //res.json(result);
         
     })
