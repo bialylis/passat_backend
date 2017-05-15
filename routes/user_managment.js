@@ -27,7 +27,7 @@ var user_managment = {
                     res.status(400);
                     res.json({
                         "status": 400,
-                        "message": "Can not invite user"
+                        "message": "Can not invite user " + id
                     });
                 })
                 query.on("end", function(result){
