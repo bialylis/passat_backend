@@ -57,6 +57,13 @@ var groups = {
             result['userList'] = result2;
             res.json(response)
         })
+        query2.on('error', function(result){
+            res.status(400);
+            res.json({
+                "status": 400,
+                "message": "No such group"
+            });
+        })
 
         //res.json(result);
         
