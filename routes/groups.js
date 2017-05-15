@@ -53,13 +53,11 @@ var groups = {
                                     INNER JOIN membership on user_account.user_id = membership.member
                                     WHERE membership."group" = ($1)`, [id]);
         query2.on('row', function(result2){
-            var response = {
-                group: result,
-                userList: result2
-            };
-
+            var response = JSON.stringify(result);
+            result['userList'] = result2;
             res.json(response)
         })
+        
         //res.json(result);
         
     })
