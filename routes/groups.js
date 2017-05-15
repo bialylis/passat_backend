@@ -56,7 +56,7 @@ var groups = {
             var response = JSON.stringify(result);
             response['userList'] = result2;
             res.json(response)
-        })
+        });
         query2.on('error', function(result){
             res.status(400);
             res.json({
