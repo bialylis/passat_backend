@@ -54,7 +54,7 @@ var groups = {
                                     WHERE membership."group" = ($1)`, [id]);
         query2.on('row', function(result2){
             var response = JSON.stringify(result);
-            result['userList'] = result2;
+            response['userList'] = result2;
             res.json(response)
         })
         query2.on('error', function(result){
