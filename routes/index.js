@@ -4,6 +4,7 @@ var secret = require('./secret_info.js');
 var auth = require('./auth.js');
 var groups = require('./groups.js');
 var managment = require('./user_managment.js');
+var crypto = require('./crypto.js');
 
 
 /*
@@ -26,7 +27,14 @@ router.post('/auth/group/:id', groups.update);
 router.delete('/auth/group/:id', groups.delete);
 
 router.post('/auth/group/:id/member', managment.invite)
-router.delete('/auth/group/:id/member', managment.remove)
+router.delete('/auth/group/:id/member/:userid', managment.remove)
+
+router.post('/auth/crypto', crypto.generate_new_keypair)
+router.post('/auth/crypto/encrypt', crypto.encrypt)
+router.post('/auth/crypto/decrypt', crypto.decrypt)
+
+router.get('/auth/crypto/private', crypto.privateKeyPem)
+router.get('/auth/crypto/public', crypto.publicKeyPem)
 
 
 

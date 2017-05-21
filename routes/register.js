@@ -3,6 +3,7 @@ var jwt = require('jwt-simple');
 var register = {
 
   register: function(req, res) {
+    register.generate_keypair(1, "pass", function() {})
 
     var client = req.app.get('db');
 
@@ -23,6 +24,8 @@ var register = {
     // Fire a query to your DB and check if the credentials are valid
     register.validate(username, password, email, client, function(response){
 
+
+
       console.log("done")
 
       if (!response) { // If authentication fails, we send a 401 back
@@ -41,12 +44,14 @@ var register = {
 
   insert: function(username, password, email, client, done){
 
-    var query = client.query("INSERT INTO user_account (username, email, password) VALUES ($1, $2, $3)", [username, email, password])
+    var query = client.query("INSERT INTO user_account (username, email, password) VALUES ($1, $2, $3) ", [username, email, password])
     query.on('end', function(result) {
         var response = {  
           success: 'true'
         };
-        done(response);
+        // register.generate_keypair(1, "pass", function() {
+          done(response);
+        // })
     });
     query.on('error', function(result){
       done(null);
@@ -78,8 +83,7 @@ var register = {
       console.log("error")
       done(null)
     })
-  },
-
+  }
 
 
 }

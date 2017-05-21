@@ -81,13 +81,33 @@ function initializeStoredPasswordTable(err, client, done) {
     }
 }
 
-function connect_and_init(err, client, done) {
-    initializeUserAccountTable(err, client, done);
-    initializeGroupTable(err, client, done);
-    initializeMembershipTable(err, client, done);
-    initializeStoredPasswordTable(err, client, done);
-
+function migration1(err, client, done) {
+    if (err) {
+        console.log(err)
+    }else {
+        client.query(`ALTER TABLE user_account ADD COLUMN private_key bytea, ADD COLUMN public_key bytea;`, function(err, result) {
+            done();
+            if (err)
+            {
+                console.error(err);
+            }
+        });
+    }
 }
+
+function connect_and_init(err, client, done) {
+    initializeUserAccountTable(err, client, function() {
+        initializeGroupTable(err, client, function() {
+            initializeMembershipTable(err, client, function(){
+                initializeStoredPasswordTable(err, client, function(){
+                    migration1(err, client, done);
+                });
+            });
+        });
+    });
+}
+
+
 module.exports.initializeUserAccountTable = initializeUserAccountTable;
 module.exports.initializeGroupTable = initializeGroupTable;
 module.exports.initializeMembershipTable = initializeMembershipTable;
