@@ -65,7 +65,9 @@ var crypto = {
 	publicKeyPem: function(req, res){
 		var client = req.app.get('db');
     	var user = req.user;
-    	getPublicKey(user.user_id, client, function(pem){
+    	    var id = req.params.id;
+
+    	getPublicKey(id, client, function(pem){
     		if (pem == null) {
 	             res.status(400);
 	             res.json({
@@ -84,6 +86,7 @@ var crypto = {
 	privateKeyPem: function(req, res){
 		var client = req.app.get('db');
     	var user = req.user;
+
     	getPrivateKey(user.user_id, client, function(pem){
     		if (pem == null) {
 	             res.status(400);

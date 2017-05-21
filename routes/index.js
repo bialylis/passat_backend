@@ -34,7 +34,7 @@ router.post('/auth/crypto/encrypt', crypto.encrypt)
 router.post('/auth/crypto/decrypt', crypto.decrypt)
 
 router.get('/auth/crypto/private', crypto.privateKeyPem)
-router.get('/auth/crypto/public', crypto.publicKeyPem)
+router.get('/auth/crypto/public/:id', crypto.publicKeyPem)
 
 
 
