@@ -174,6 +174,7 @@ function getPublicKey(userid, client, done){
 
 	})
 	query.on("error", function(result){
+		console.log("getPublicKey errorr")
 		done(null)
 	})
 	query.on("end", function(result){
