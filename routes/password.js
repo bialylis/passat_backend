@@ -3,11 +3,13 @@ var password = {
     add_group_password: function(req, res){
         var client = req.app.get('db');
         var group_id = req.params.id;
+        var user = req.user;
+        var name = req.pass_name;
         var login = req.body.encrypted_login;
         var pass = req.body._encrypted_password;
         var note = req.body.note;
 
-        addPassword(client, login, pass, note, null, group_id, function(success){
+        addPassword(client, name, login, pass, note, user.user_id, group_id, function(success){
             console.log("add password")
             if (success) {
                 var response = {
@@ -48,7 +50,7 @@ var password = {
         var user = req.user;
         var group_id = req.params.id;
 
-        getPasswords(client, group_id, null, function (response) {
+        getPasswords(client, group_id, user.user_id, function (response) {
             console.log("getting passwords finished");
             res.json(response)
         })
@@ -74,10 +76,10 @@ function getPasswords(client, group_id, user, next){
 
 }
 
-function addPassword(client, login, pass, note, owner, group, done){
+function addPassword(client, pass_name, login, pass, note, owner, group, done){
     if (group==null){
-        var query = client.query(`INSERT INTO stored_password (login, password, note, owner)
-         VALUES ($1, $2, $3, $4)`, [login, pass, note, owner]);
+        var query = client.query(`INSERT INTO stored_password (login, password, note, owner, pass_name)
+         VALUES ($1, $2, $3, $4)`, [login, pass, note, owner, pass_name]);
 
         query.on('error', function (error) {
             console.log(error);
@@ -90,8 +92,8 @@ function addPassword(client, login, pass, note, owner, group, done){
         })
     }
     else{
-        var query = client.query(`INSERT INTO stored_password (login, password, note, group)
-         VALUES ($1, $2, $3, $4)`, [login, pass, note, group]);
+        var query = client.query(`INSERT INTO stored_password (login, password, note, owner, group, pass_name)
+         VALUES ($1, $2, $3, $4)`, [login, pass, note, owner, group, pass_name]);
 
         query.on('error', function(error){
             console.log(error);
