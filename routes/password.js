@@ -6,7 +6,7 @@ var password = {
         var user = req.user;
         var name = req.pass_name;
         var login = req.body.encrypted_login;
-        var pass = req.body._encrypted_password;
+        var pass = req.body.encrypted_password;
         var note = req.body.note;
 
         addPassword(client, name, login, pass, note, user.user_id, group_id, function(success){
@@ -92,7 +92,7 @@ function addPassword(client, pass_name, login, pass, note, owner, group, done){
         })
     }
     else{
-        var query = client.query(`INSERT INTO stored_password (login, password, note, owner, group, pass_name)
+        var query = client.query(`INSERT INTO stored_password (login, password, note, owner, "group", pass_name)
          VALUES ($1, $2, $3, $4)`, [login, pass, note, owner, group, pass_name]);
 
         query.on('error', function(error){
