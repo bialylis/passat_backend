@@ -94,12 +94,28 @@ function migration1(err, client, done) {
     }
 }
 
+function migration2(err, client, done) {
+    if (err) {
+        console.log(err)
+    }else {
+        client.query(`ALTER TABLE stored_password ADD COLUMN pass_name varying(250);`, function(err, result) {
+            done();
+            if (err)
+            {
+                console.error(err);
+            }
+        });
+    }
+}
+
 function connect_and_init(err, client, done) {
     initializeUserAccountTable(err, client, function() {
         initializeGroupTable(err, client, function() {
             initializeMembershipTable(err, client, function(){
                 initializeStoredPasswordTable(err, client, function(){
-                    migration1(err, client, done);
+                    migration1(err, client, function () {
+                        migration2(err, client, done);
+                    });
                 });
             });
         });

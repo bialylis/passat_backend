@@ -20,10 +20,10 @@ router.use('/auth/group/:id', [require('../middlewares/validateUserRole.js')]);
 router.get('/auth/group', groups.getAll);
 router.get('/auth/group/:id', groups.getOne);
 
-router.post('/auth/group/:id/password', password.add_group_password);
+router.post('/auth/group/:id/password', password.add_group_password)
 
-router.get('/auth/group/:id/password', password.get_group_passwords);
-router.get('/auth/group/:id/password/:passid', password.get_group_password);
+router.get('/auth/group/:id/password', password.get_group_passwords)
+router.get('/auth/group/:id/password/:passid', password.get_group_password)
 
 router.post('/auth/group', groups.create);
 router.post('/auth/group/:id', groups.update);

@@ -45,6 +45,7 @@ var password = {
 
     get_group_passwords: function(req, res){
         var client = req.app.get('db');
+        var user = req.user;
         var group_id = req.params.id;
 
         getPasswords(client, group_id, null, function (response) {
@@ -55,8 +56,7 @@ var password = {
 }
 
 function getPasswords(client, group_id, user, next){
-    if (user == null){
-        var query = client.query(`SELECT pass_id from stored_password WHERE "group" = $1`, [group_id]);
+        var query = client.query(`SELECT pass_id, pass_name from stored_password WHERE "group" = $1 and owner == $2`, [group_id, user]);
 
         passwords = []
         query.on('error', function (error) {
@@ -71,7 +71,6 @@ function getPasswords(client, group_id, user, next){
         query.on('end', function (result) {
             next(passwords)
         })
-    }
 
 }
 
