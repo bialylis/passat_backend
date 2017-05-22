@@ -58,7 +58,7 @@ var password = {
 }
 
 function getPasswords(client, group_id, user, next){
-        var query = client.query(`SELECT pass_id, pass_name from stored_password WHERE "group" = $1 and owner == $2`, [group_id, user]);
+        var query = client.query(`SELECT pass_id, pass_name from stored_password WHERE "group" = $1 and owner = $2`, [group_id, user]);
 
         passwords = []
         query.on('error', function (error) {
@@ -79,7 +79,7 @@ function getPasswords(client, group_id, user, next){
 function addPassword(client, pass_name, login, pass, note, owner, group, done){
     if (group==null){
         var query = client.query(`INSERT INTO stored_password (login, password, note, owner, pass_name)
-         VALUES ($1, $2, $3, $4)`, [login, pass, note, owner, pass_name]);
+         VALUES ($1, $2, $3, $4, $5)`, [login, pass, note, owner, pass_name]);
 
         query.on('error', function (error) {
             console.log(error);
@@ -93,7 +93,7 @@ function addPassword(client, pass_name, login, pass, note, owner, group, done){
     }
     else{
         var query = client.query(`INSERT INTO stored_password (login, password, note, owner, "group", pass_name)
-         VALUES ($1, $2, $3, $4)`, [login, pass, note, owner, group, pass_name]);
+         VALUES ($1, $2, $3, $4, $5, $6)`, [login, pass, note, owner, group, pass_name]);
 
         query.on('error', function(error){
             console.log(error);
