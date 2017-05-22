@@ -4,11 +4,11 @@ var password = {
         var client = req.app.get('db');
         var group_id = req.params.id;
         var user = req.user;
-        var name = req.pass_name;
+        var name = req.body.pass_name;
         var login = req.body.encrypted_login;
         var pass = req.body.encrypted_password;
         var note = req.body.note;
-
+        console.log(pass_name)
         addPassword(client, name, login, pass, note, user.user_id, group_id, function(success){
             console.log("add password")
             if (success) {
