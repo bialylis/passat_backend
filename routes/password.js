@@ -8,7 +8,7 @@ var password = {
         var login = req.body.encrypted_login;
         var pass = req.body.encrypted_password;
         var note = req.body.note;
-        console.log(pass_name)
+        console.log(name)
         addPassword(client, name, login, pass, note, user.user_id, group_id, function(success){
             console.log("add password")
             if (success) {
