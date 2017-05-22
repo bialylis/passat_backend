@@ -122,3 +122,5 @@ function getPassword(client, pass_id, next) {
         }
     })
 }
+
+module.exports = password;
