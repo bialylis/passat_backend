@@ -5,7 +5,7 @@ var auth = require('./auth.js');
 var groups = require('./groups.js');
 var managment = require('./user_managment.js');
 var crypto = require('./crypto.js');
-var password = require('./password');
+var password = require('./password.js');
 
 /*
  * Routes that can be accessed by any one
