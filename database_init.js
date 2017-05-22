@@ -84,7 +84,16 @@ function migration1(err, client, done) {
     if (err) {
         console.log(err)
     }else {
-        client.query(`ALTER TABLE user_account ADD COLUMN private_key bytea, ADD COLUMN public_key bytea;`, function(err, result) {
+        client.query(`DO $$ 
+                        BEGIN 
+                            BEGIN 
+                                ALTER TABLE user_account ADD COLUMN private_key bytea;
+                            EXCEPTION
+                            WHEN 
+                                duplicate_column THEN RAISE NOTICE 'column private_key already exists in user_account.';
+                            END;
+                        END;
+                      $$`, function(err, result) {
             done();
             if (err)
             {
@@ -98,7 +107,39 @@ function migration2(err, client, done) {
     if (err) {
         console.log(err)
     }else {
-        client.query(`ALTER TABLE stored_password ADD COLUMN pass_name varying(250);`, function(err, result) {
+        client.query(`DO $$ 
+                        BEGIN 
+                            BEGIN 
+                                ALTER TABLE user_account ADD COLUMN public_key bytea;
+                            EXCEPTION
+                            WHEN 
+                                duplicate_column THEN RAISE NOTICE 'column public_key already exists in user_account.';
+                            END;
+                        END;
+                      $$`, function(err, result) {
+            done();
+            if (err)
+            {
+                console.error(err);
+            }
+        });
+    }
+}
+
+function migration3(err, client, done) {
+    if (err) {
+        console.log(err)
+    }else {
+        client.query(`DO $$ 
+                        BEGIN 
+                            BEGIN 
+                                ALTER TABLE stored_password ADD COLUMN pass_name varying(250);
+                            EXCEPTION
+                            WHEN 
+                                duplicate_column THEN RAISE NOTICE 'column pass_name already exists in stored_password.';
+                            END;
+                        END;
+                      $$`, function(err, result) {
             done();
             if (err)
             {
@@ -114,7 +155,9 @@ function connect_and_init(err, client, done) {
             initializeMembershipTable(err, client, function(){
                 initializeStoredPasswordTable(err, client, function(){
                     migration1(err, client, function () {
-                        migration2(err, client, done);
+                        migration2(err, client, function () {
+                            migration3(err, client, done);
+                        });
                     });
                 });
             });
