@@ -30,6 +30,7 @@ router.post('/auth/group/:id/member', managment.invite)
 router.delete('/auth/group/:id/member/:userid', managment.remove)
 
 router.post('/auth/crypto', crypto.generate_new_keypair)
+
 router.post('/auth/crypto/encrypt', crypto.encrypt)
 router.post('/auth/crypto/decrypt', crypto.decrypt)
 

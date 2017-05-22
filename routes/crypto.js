@@ -65,7 +65,7 @@ var crypto = {
 	publicKeyPem: function(req, res){
 		var client = req.app.get('db');
     	var user = req.user;
-    	    var id = req.params.id;
+    	var id = req.params.id;
 
     	getPublicKey(id, client, function(pem){
     		if (pem == null) {

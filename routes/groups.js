@@ -34,11 +34,14 @@ var groups = {
   },
 
   getOne: function(req, res) {
+    console.log("get One ")
     var client = req.app.get('db');
     var user = req.user;
 
     var id = req.params.id;
-    var query = client.query(`SELECT * FROM "group" WHERE group_id = ($1)`, [id]);
+    var query = client.query(`SELECT group_id, name, admin, username, secret_word FROM "group" 
+                                INNER JOIN user_account on "group".admin = user_account.user_id
+                                WHERE group_id = ($1)`, [id]);
     query.on('error', function(result){
         res.status(400);
         res.json({
@@ -47,9 +50,39 @@ var groups = {
         });
     });
     query.on('row', function(result){
-        res.json(result);
+        var query2 = client.query(`SELECT user_id, username from user_account 
+                                    INNER JOIN membership on user_account.user_id = membership.member
+                                    WHERE membership."group" = ($1)`, [id]);
+        result['userList'] = [];
+        query2.on('row', function(result2){
+            result['userList'].push(result2);
+        });
+        query2.on('error', function(result2){
+            res.status(400);
+            res.json({
+                "status": 400,
+                "message": "Database error"
+            });
+        });
+        query2.on('end', function(result2){
+          console.log('end2 ' + result2)
+            res.json(result);
+
+        });
+
+        //res.json(result);
         
     })
+      query.on('end', function(result){
+        console.log("end 1 " + result )
+          if(result.rowCount == 0){
+              res.status(400);
+              res.json({
+                  "status": 400,
+                  "message": "No such group"
+              });
+          }
+      })
   },
 
   create: function(req, res) {
@@ -169,6 +202,7 @@ var groups = {
     }
    
   },
+
 };
 
 module.exports = groups;
