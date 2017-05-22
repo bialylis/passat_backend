@@ -12,15 +12,10 @@ module.exports = function(req, res, next) {
                                 WHERE membership.member = ($1) AND membership.accepted = TRUE AND membership."group" = ($2)`, [user.user_id, groupid]);
 
     query.on("row", function(result){
-<<<<<<< HEAD
-    	console.log(result);
-    	req.group = result;
-   		next();
-=======
+
       console.log(result);
       req.group = result;
       next();
->>>>>>> groups
     });
     query.on("end", function(result){
       if (result.rowCount == 0) {
@@ -34,12 +29,7 @@ module.exports = function(req, res, next) {
     })
     query.on("error", function(result){
        console.log("validation")
-
-<<<<<<< HEAD
-    	res.status(401);
-=======
       res.status(401);
->>>>>>> groups
         res.json({
           'status':401,
           "message": "This user does not have access to this group"
