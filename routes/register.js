@@ -3,8 +3,6 @@ var jwt = require('jwt-simple');
 var register = {
 
   register: function(req, res) {
-    register.generate_keypair(1, "pass", function() {})
-
     var client = req.app.get('db');
 
 
