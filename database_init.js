@@ -133,7 +133,7 @@ function migration3(err, client, done) {
         client.query(`DO $$ 
                         BEGIN 
                             BEGIN 
-                                ALTER TABLE stored_password ADD COLUMN pass_name varying(250);
+                                ALTER TABLE stored_password ADD COLUMN pass_name varchar(250);
                             EXCEPTION
                             WHEN 
                                 duplicate_column THEN RAISE NOTICE 'column pass_name already exists in stored_password.';
