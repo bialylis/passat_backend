@@ -10,8 +10,9 @@ var password = {
         var note = req.body.note;
         var isAdmin = req.group.admin == user.user_id;
 
+        var user2 = req.body.user
         if (isAdmin) {
-            addPassword(client, name, login, pass, note, user.user_id, group_id, function (success) {
+            addPassword(client, name, login, pass, note, user2.user_id, group_id, function (success) {
                 console.log("add password")
                 if (success) {
                     var response = {
