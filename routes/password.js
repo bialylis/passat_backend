@@ -71,11 +71,22 @@ var password = {
                     if (key_password == null) {
                         throw Error
                     }
-                    // console.log(response.login.toString('utf8'))
+                    console.log(response.password.toString('utf8'))
                     var key = ursa.createPrivateKey(pem, key_password)
-                    response.login = key.decrypt(response.login.toString('utf8'), 'base64', 'utf8')
-                    response.password = key.decrypt(response.password.toString('utf8'), 'base64', 'utf8')
-                    response.note = key.decrypt(response.note.toString('utf8'), 'base64', 'utf8')
+
+                    if (response.login != null) {
+                        response.login = key.decrypt(response.login.toString('utf8'), 'base64', 'utf8')
+
+                    }
+                   if (response.password != null) {
+                         response.password = key.decrypt(response.password.toString('utf8'), 'base64', 'utf8')
+
+                    }
+                    if (response.note != null) {
+                            response.note = key.decrypt(response.note.toString('utf8'), 'base64', 'utf8')
+
+                    }
+
                     
                     res.json(response);
 
@@ -259,13 +270,25 @@ function addPassword(client, pass_name, login_data, pass, note, owner, group, do
 
         var key = ursa.createPublicKey(pem)
 
-        var login_data = key.encrypt(addPassword.login_data, 'utf8', 'base64');
-        var pass = key.encrypt(addPassword.pass, 'utf8', 'base64');
-        var note = key.encrypt(addPassword.note, 'utf8', 'base64');
+        if (addPassword.login_data != null) {
+             addPassword.login_data = key.encrypt(addPassword.login_data, 'utf8', 'base64');
+        }
+
+
+        if (addPassword.pass != null) {
+                addPassword.pass = key.encrypt(addPassword.pass, 'utf8', 'base64');
+        }
+
+
+        if (addPassword.note != null) {
+            addPassword.note = key.encrypt(addPassword.note, 'utf8', 'base64');
+        }
+        
+        console.log(addPassword.pass)
 
         if (group==null){
             var query = client.query(`INSERT INTO stored_password (login, password, note, owner, pass_name)
-             VALUES ($1, $2, $3, $4, $5)`, [login_data, pass, note, owner, pass_name]);
+             VALUES ($1, $2, $3, $4, $5)`, [addPassword.login_data, addPassword.pass, addPassword.note, owner, pass_name]);
 
             query.on('error', function (error) {
                 console.log(error);
@@ -279,7 +302,7 @@ function addPassword(client, pass_name, login_data, pass, note, owner, group, do
         }
         else{
             var query = client.query(`INSERT INTO stored_password (login, password, note, owner, "group", pass_name)
-             VALUES ($1, $2, $3, $4, $5, $6)`, [login_data, pass, note, owner, group, pass_name]);
+             VALUES ($1, $2, $3, $4, $5, $6)`, [addPassword.login_data, addPassword.pass, addPassword.note, owner, group, pass_name]);
 
             query.on('error', function(error){
                 console.log(error);
