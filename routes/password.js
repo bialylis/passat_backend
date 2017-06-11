@@ -122,7 +122,7 @@ var password = {
     get_password_ids: function(req, res){
         var client = req.app.get('db');
         var group_id = req.params.id;
-        var pass_name = req.body.passname;
+        var pass_name = req.headers.passname;
         var user = req.user;
         console.log('in');
         var group = req.group;
