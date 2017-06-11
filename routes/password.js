@@ -120,6 +120,31 @@ var password = {
         })
     },
 
+    get_password_ids: function(req, res){
+        var client = req.app.get('db');
+        var group_id = req.params.id;
+        var pass_name = req.headers.passname;
+        var user = req.user;
+        console.log('in');
+        var group = req.group;
+        var isAdmin = group.admin == user.user_id;
+
+        if (isAdmin) {
+            getPasswordsByName(client, group_id, pass_name, function (response) {
+                console.log("getting passwords by name finished");
+                res.json(response)
+            })
+        }else {
+            res.status(401);
+            res.json({
+                "status": 401,
+                "message": "User doesnt have permission to get data of these passwords"
+            });
+
+        }
+
+    },
+
     delete_password_entry: function(req, res){
         var client = req.app.get('db');
         var group_id = req.params.id;
