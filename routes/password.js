@@ -165,6 +165,25 @@ var password = {
         }
 
     },
+    delete_all_for_user: function(req, res){
+                var client = req.app.get('db');
+        var pass_id = req.param.passid;
+
+        var group = req.group;
+        var isAdmin = group.admin == user.user_id;
+
+        if (isAdmin) {
+            query = client.query("DELTE")
+        }else {
+            res.status(401);
+            res.json({
+                "status": 401,
+                "message": "User doesnt have permission to delete password"
+            });
+
+        }
+
+    }
 };
 
 function getPasswords(client, group_id, user, next){
