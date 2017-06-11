@@ -135,7 +135,7 @@ var password = {
 
     delete_password: function(req, res) {
         var client = req.app.get('db');
-        var pass_id = req.param.passid;
+        var pass_id = req.params.passid;
         var user = req.user;
         var group = req.group;
         var isAdmin = group.admin == user.user_id;
