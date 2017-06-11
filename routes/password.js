@@ -106,8 +106,66 @@ var password = {
             console.log("getting passwords finished");
             res.json(response)
         })
-    }
-}
+    },
+
+    get_password_ids: function(req, res){
+        var client = req.app.get('db');
+        var group_id = req.params.id;
+        var pass_name = req.body.passname;
+
+        var group = req.group;
+        var isAdmin = group.admin == user.user_id;
+
+        if (isAdmin) {
+            getPasswordsByName(client, group_id, pass_name, function (response) {
+                console.log("getting passwords by name finished");
+                res.json(response)
+            })
+        }else {
+            res.status(401);
+            res.json({
+                "status": 401,
+                "message": "User doesnt have permission to get data of these passwords"
+            });
+
+        }
+
+    },
+
+    delete_password: function(req, res) {
+        var client = req.app.get('db');
+        var pass_id = req.param.passid;
+
+        var group = req.group;
+        var isAdmin = group.admin == user.user_id;
+
+        if (isAdmin) {
+            deletePassword(client,pass_id,function(success){
+                if (success) {
+                    var response = {
+                        success: 'true'
+                    };
+                    res.json(response);
+                } else {
+                    res.status(400);
+                    res.json({
+                        'status': 400,
+                        "message": "Could not delete password"
+                    })
+
+                }
+            })
+        }else {
+            res.status(401);
+            res.json({
+                "status": 401,
+                "message": "User doesnt have permission to delete password"
+            });
+
+        }
+
+    },
+};
 
 function getPasswords(client, group_id, user, next){
         var query = client.query(`SELECT pass_id, pass_name from stored_password WHERE "group" = $1 and owner = $2`, [group_id, user]);
@@ -126,6 +184,24 @@ function getPasswords(client, group_id, user, next){
             next(passwords)
         })
 
+}
+
+function getPasswordsByName(client, group_id, pass_name, next){
+    var query = client.query(`SELECT pass_id from stored_password WHERE "group" = $1 and pass_name = $2`, [group_id, pass_name]);
+
+    passwords = []
+    query.on('error', function (error) {
+        console.log(error)
+        next(error)
+    })
+
+    query.on('row', function(result){
+        passwords.push(result);
+    })
+
+    query.on('end', function (result) {
+        next(passwords)
+    })
 }
 
 function addPassword(client, pass_name, login_data, pass, note, owner, group, done){
@@ -199,4 +275,16 @@ function getPassword(client, pass_id, next) {
     })
 }
 
+function deletePassword(client, pass_id, next){
+    var query = client.query(`DELETE FROM stored_password CASCADE WHERE pass_id = ($1)`, [pass_id]);
+
+    query.on('error', function (error) {
+        console.log(error);
+        next(false)
+    })
+    query.on('end', function (result) {
+        console.log('password deleted');
+        next(true)
+    })
+}
 module.exports = password;
