@@ -156,39 +156,39 @@ var password = {
 
         if (isAdmin) {
             getPasswordsByName(client, group_id, pass_name, function (list) {
-                res.json(list)
-                // console.log("getting passwords by name finished");
-                // var failed = false;
-                // var result = [];
-                // result['not_deleted'] = [];
-                // list.forEach(function(entry){
-                //     var id = parseInt(entry['pass_id']);
-                //     console.log(id);
-                //     // deletePassword(client,id,function(success){
-                //     //     if(!success){
-                //     //         failed = true;
-                //     //         result['not_deleted'].push(id)
-                //     //         console.log("Failed to delete pass "+id);
-                //     //
-                //     //     }
-                //     //     else{
-                //     //         console.log("Deleted pass "+id);
-                //     //     }
-                //     // })
-                //
-                //
-                // })
-                // if(failed){
-                //     res.status(400);
-                //     result['status']=400;
-                //     result['message']="Could not delete passwords"
-                //     res.json(result)
-                // }
-                // else{
-                //     res.json({
-                //         success: 'true'
-                //     });
-                // }
+                //res.json(list)
+                console.log("getting passwords by name finished");
+                var failed = false;
+                var result = [];
+                result['not_deleted'] = [];
+                list.forEach(function(entry){
+                    var id = parseInt(entry['pass_id']);
+                    console.log(id);
+                    // deletePassword(client,id,function(success){
+                    //     if(!success){
+                    //         failed = true;
+                    //         result['not_deleted'].push(id)
+                    //         console.log("Failed to delete pass "+id);
+                    //
+                    //     }
+                    //     else{
+                    //         console.log("Deleted pass "+id);
+                    //     }
+                    // })
+
+
+                })
+                if(failed){
+                    res.status(400);
+                    result['status']=400;
+                    result['message']="Could not delete passwords"
+                    res.json(result)
+                }
+                else{
+                    res.json({
+                        success: 'true'
+                    });
+                }
 
             })
         }else {
