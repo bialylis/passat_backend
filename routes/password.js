@@ -112,7 +112,7 @@ var password = {
         var client = req.app.get('db');
         var group_id = req.params.id;
         var pass_name = req.body.passname;
-
+        console.log('in');
         var group = req.group;
         var isAdmin = group.admin == user.user_id;
 
