@@ -112,6 +112,7 @@ var password = {
         var client = req.app.get('db');
         var group_id = req.params.id;
         var pass_name = req.body.passname;
+        var user = req.user;
         console.log('in');
         var group = req.group;
         var isAdmin = group.admin == user.user_id;
@@ -135,7 +136,7 @@ var password = {
     delete_password: function(req, res) {
         var client = req.app.get('db');
         var pass_id = req.param.passid;
-
+        var user = req.user;
         var group = req.group;
         var isAdmin = group.admin == user.user_id;
 
