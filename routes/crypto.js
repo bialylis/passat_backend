@@ -211,7 +211,7 @@ function generate(userid, client, encription_pass, done) {
 	console.log(pem.toString("utf8"))
 
 	// public = ursa.createPublicKey(key.toPublicPem())
-	var query = client.query(`UPDATE user_account SET private_key = ($1), public_key = ($2) WHERE user_id = ($3)`, [pem, key.toPublicPem(), userid]);
+	var query = client.query(`UPDATE user_account SET private_key = ($1), public_key = ($2) WHERE user_id = ($3)`, [pem.toString("utf8"), key.toPublicPem(), userid]);
 	query.on("error", function(error){
 		console.log(error);
 		done(false)
