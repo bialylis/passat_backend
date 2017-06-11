@@ -166,6 +166,45 @@ var password = {
         }
 
     },
+    delete_all_for_user: function(req, res){
+        
+        var client = req.app.get('db');
+        var userid = req.params.userid;
+        
+        // console.log(req)
+
+        var group = req.group;
+        var isAdmin = group.admin == req.user.user_id;
+
+        if (isAdmin) {
+            console.log(userid)
+            console.log(group.group_id)
+            query = client.query("DELETE FROM stored_password CASCADE WHERE owner = ($1) AND \"group\" = ($2)", [userid, group.group_id])
+            query.on("error", function(result){
+                console.log(result)
+                res.status(400);
+                res.json({
+                    'status': 400,
+                    "message": "Could not delete password"
+                })
+            })
+            query.on("end", function(result){
+                var response = {
+                    success: 'true'
+                };
+                res.json(response);
+
+            })
+        }else {
+            res.status(401);
+            res.json({
+                "status": 401,
+                "message": "User doesnt have permission to delete password"
+            });
+
+        }
+
+    }
 };
 
 function getPasswords(client, group_id, user, next){

@@ -1,4 +1,5 @@
 var jwt = require('jwt-simple');
+var bcrypt = require('bcrypt')
 
 var auth = {
 
@@ -20,7 +21,7 @@ var auth = {
     console.log("client");
 
     // Fire a query to your DB and check if the credentials are valid
-    auth.validate(username, password, client, function(dbUserObj){
+    auth.validate(username, bcrypt.hashSync(password), client, function(dbUserObj){
       console.log("validate");
       if (!dbUserObj) { // If authentication fails, we send a 401 back
         res.status(401);
