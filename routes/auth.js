@@ -1,4 +1,5 @@
 var jwt = require('jwt-simple');
+var bcrypt = require('bcrypt')
 
 var auth = {
 
