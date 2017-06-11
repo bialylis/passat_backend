@@ -21,7 +21,7 @@ var auth = {
     console.log("client");
 
     // Fire a query to your DB and check if the credentials are valid
-    auth.validate(username, bcrypt.hashSync(password, "secret_souce"), client, function(dbUserObj){
+    auth.validate(username, password, client, function(dbUserObj){
       console.log("validate");
       if (!dbUserObj) { // If authentication fails, we send a 401 back
         res.status(401);
@@ -41,7 +41,7 @@ var auth = {
 
   validate: function(username, password, client, next) {
 
-    var query = client.query("SELECT user_id, username, email, verified FROM user_account WHERE username = ($1) AND password = ($2) LIMIT 1", [username, password])
+    var query = client.query("SELECT user_id, username, email, verified, password FROM user_account WHERE username = ($1) LIMIT 1", [username])
 
     query.on('error', function(result){
       console.log("sql error " + result);
@@ -49,7 +49,16 @@ var auth = {
     });
 
     query.on('row', function(result){
-        next(result);
+      console.log(result)
+      if (bcrypt.compareSync(password, result.password))
+      {
+          result.password = null
+          next(result);
+      }
+      else{
+          next(null)
+      }
+
     });
     query.on('end', function(result) {
       if (result.rowCount != 1) {
