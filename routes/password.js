@@ -133,12 +133,12 @@ var password = {
             getPasswordsByName(client, group_id, pass_name, function (list) {
                 console.log("getting passwords by name finished");
                 failed = false;
-                not_deleted = []
+                result['not_deleted'] = [];
                 list.forEach(function(entry){
                     deletePassword(client,entry['pass_id'],function(success){
                         if(!success){
                             failed = true;
-                            failed.push(entry['pass_id'])
+                            result['not_deleted'].push(entry['pass_id'])
                             console.log("Failed to delete pass "+entry['pass_id']);
 
                         }
@@ -151,11 +151,9 @@ var password = {
                 })
                 if(failed){
                     res.status(400);
-                    res.json({
-                        'status': 400,
-                        "message": "Could not delete password",
-                        "pass_id": not_deleted
-                    })
+                    result['status']=400;
+                    result['message']="Could not delete password"
+                    res.json(result)
                 }
                 else{
                     res.json({
