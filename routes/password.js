@@ -73,6 +73,7 @@ var password = {
                     }
                     console.log(key_password)
                     var key = ursa.createPrivateKey(pem, key_password)
+                    console.log(key)
 
                     if (response.login != null) {
                         response.login = key.decrypt(response.login.toString('utf8'), 'base64', 'utf8')
