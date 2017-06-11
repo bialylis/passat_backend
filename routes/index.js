@@ -24,11 +24,11 @@ router.post('/auth/group/:id/password', password.add_group_password)
 
 router.get('/auth/group/:id/password', password.get_group_passwords)
 router.get('/auth/group/:id/password/:passid', password.get_group_password)
-router.get('/auth/group/:id/password/name', password.get_password_ids)
+router.get('/auth/group/:id/password/:passname', password.get_password_ids)
 
 router.delete('/auth/group/:id/password/:passid', password.delete_password)
 router.delete('/auth/group/:id/password/user/:userid', password.delete_all_for_user)
-router.delete('/auth/group/:id/password/name', password.delete_password_entry)
+router.delete('/auth/group/:id/password/:passname', password.delete_password_entry)
 
 router.post('/auth/group', groups.create);
 router.post('/auth/group/:id', groups.update);
