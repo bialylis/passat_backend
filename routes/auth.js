@@ -41,7 +41,7 @@ var auth = {
 
   validate: function(username, password, client, next) {
 
-    var query = client.query("SELECT user_id, username, email, verified, password FROM user_account WHERE username = ($1) LIMIT 1", [username])
+    var query = client.query("SELECT user_id, username, email, verified, password, CASE WHEN private_key IS NULL THEN 'False' ELSE 'True' END AS hasKeys FROM user_account WHERE username = ($1) LIMIT 1", [username])
 
     query.on('error', function(result){
       console.log("sql error " + result);
