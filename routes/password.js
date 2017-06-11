@@ -135,15 +135,16 @@ var password = {
                 failed = false;
                 result['not_deleted'] = [];
                 list.forEach(function(entry){
-                    deletePassword(client,entry['pass_id'],function(success){
+                    var id = parseInt(entry['pass_id']);
+                    deletePassword(client,id,function(success){
                         if(!success){
                             failed = true;
-                            result['not_deleted'].push(entry['pass_id'])
-                            console.log("Failed to delete pass "+entry['pass_id']);
+                            result['not_deleted'].push(id)
+                            console.log("Failed to delete pass "+id);
 
                         }
                         else{
-                            console.log("Deleted pass "+entry['pass_id']);
+                            console.log("Deleted pass "+id);
                         }
                     })
 
