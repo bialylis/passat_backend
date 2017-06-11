@@ -21,7 +21,7 @@ var auth = {
     console.log("client");
 
     // Fire a query to your DB and check if the credentials are valid
-    auth.validate(username, bcrypt.hashSync(password), client, function(dbUserObj){
+    auth.validate(username, bcrypt.hashSync(password, "secret_souce"), client, function(dbUserObj){
       console.log("validate");
       if (!dbUserObj) { // If authentication fails, we send a 401 back
         res.status(401);
