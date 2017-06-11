@@ -8,12 +8,27 @@ var crypto = {
     	var encription_pass = req.body.encription_pass;
 
     	generate(user.user_id,client, encription_pass, function(success){
+
+
     		console.log("generate")
     		if (success) {
-	    		var response = {
-	                success: 'true'
-	            };
-	            res.json(response);
+
+	    		query = client.query("DELETE FROM stored_password WHERE owner = ($1)", [user.user_id])
+	    		query.on("error", function(result){
+		             res.status(400);
+		             res.json({
+		              'status':400,
+		              "message": "Database error"
+		            })
+	    		})
+
+	    		query.on("end", function(result){
+		    		var response = {
+		                success: 'true'
+		            };
+		            res.json(response);
+	    		})
+
     		}else {
 	             res.status(400);
 	             res.json({
