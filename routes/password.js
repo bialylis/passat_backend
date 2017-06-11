@@ -16,22 +16,33 @@ var password = {
 
         var user2 = req.body.user
         if (isAdmin) {
-            addPassword(client, name, login, pass, note, user2.user_id, group_id, function (success) {
-                console.log("add password ")
-                if (success) {
-                    var response = {
-                        success: 'true'
-                    };
-                    res.json(response);
-                } else {
-                    res.status(400);
+            validatePassword(client, group_id, name, function (valid) {
+                if(valid){
+                    addPassword(client, name, login, pass, note, user2.user_id, group_id, function (success) {
+                        console.log("add password ")
+                        if (success) {
+                            var response = {
+                                success: 'true'
+                            };
+                            res.json(response);
+                        } else {
+                            res.status(400);
+                            res.json({
+                                'status': 400,
+                                "message": "Database error"
+                            })
+
+                        }
+                    })
+                }
+                else{
                     res.json({
                         'status': 400,
-                        "message": "Database error"
+                        'message': "Password name already taken"
                     })
-
                 }
             })
+
         }else{
             res.json({
                 'status': 400,
@@ -156,7 +167,6 @@ var password = {
 
         if (isAdmin) {
             getPasswordsByName(client, group_id, pass_name, function (list) {
-                //res.json(list)
                 console.log("getting passwords by name finished");
                 var failed = false;
                 var result = [];
@@ -407,4 +417,21 @@ function deletePassword(client, pass_id, next){
         next(true)
     })
 }
+
+function validatePassword(client, group_id, pass_name, next){
+    var query = client.query(`SELECT * FROM stored_password WHERE "group" = ($1) AND pass_name = ($2)`, [group_id, pass_name]);
+
+    query.on('end', function(result) {
+        if (result.rowCount > 0) {
+            next(false);
+            return;
+        }
+        next(true);
+    })
+    query.on('error', function(result){
+        console.log("error")
+        next(false);
+    })
+}
+
 module.exports = password;
