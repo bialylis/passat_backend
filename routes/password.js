@@ -164,17 +164,17 @@ var password = {
                 list.forEach(function(entry){
                     var id = parseInt(entry['pass_id']);
                     console.log(id);
-                    // deletePassword(client,id,function(success){
-                    //     if(!success){
-                    //         failed = true;
-                    //         result['not_deleted'].push(id)
-                    //         console.log("Failed to delete pass "+id);
-                    //
-                    //     }
-                    //     else{
-                    //         console.log("Deleted pass "+id);
-                    //     }
-                    // })
+                    deletePassword(client,id,function(success){
+                        if(!success){
+                            failed = true;
+                            result['not_deleted'].push(id)
+                            console.log("Failed to delete pass "+id);
+
+                        }
+                        else{
+                            console.log("Deleted pass "+id);
+                        }
+                    })
 
 
                 })
