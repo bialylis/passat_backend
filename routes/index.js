@@ -24,6 +24,9 @@ router.post('/auth/group/:id/password', password.add_group_password)
 
 router.get('/auth/group/:id/password', password.get_group_passwords)
 router.get('/auth/group/:id/password/:passid', password.get_group_password)
+router.get('/auth/group/:id/passwordnamed', password.get_password_ids)
+
+router.delete('/auth/group/:id/password/:passid', password.delete_password)
 
 router.post('/auth/group', groups.create);
 router.post('/auth/group/:id', groups.update);
