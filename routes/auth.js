@@ -50,6 +50,7 @@ var auth = {
 
     query.on('row', function(result){
       console.log(result)
+      result.has_keys = (result.has_keys == 'True');
       if (bcrypt.compareSync(password, result.password))
       {
           result.password = null
