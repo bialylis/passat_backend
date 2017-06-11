@@ -144,7 +144,6 @@ function addPassword(client, pass_name, login_data, pass, note, owner, group, do
         var key = ursa.createPublicKey(pem)
 
         var login_data = key.encrypt(addPassword.login_data, 'utf8', 'base64');
-
         var pass = key.encrypt(addPassword.pass, 'utf8', 'base64');
         var note = key.encrypt(addPassword.note, 'utf8', 'base64');
 

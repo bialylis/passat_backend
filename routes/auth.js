@@ -40,7 +40,7 @@ var auth = {
 
   validate: function(username, password, client, next) {
 
-    var query = client.query("SELECT * FROM user_account WHERE username = ($1) AND password = ($2) LIMIT 1", [username, password])
+    var query = client.query("SELECT user_id, username, email, verified FROM user_account WHERE username = ($1) AND password = ($2) LIMIT 1", [username, password])
 
     query.on('error', function(result){
       console.log("sql error " + result);
@@ -60,7 +60,7 @@ var auth = {
 
   validateUser: function(userid, client, next) {
 
-    var query = client.query("SELECT * FROM user_account WHERE user_id = ($1) LIMIT 1", [userid])
+    var query = client.query("SELECT user_id, username, email, verified FROM user_account WHERE user_id = ($1) LIMIT 1", [userid])
     query.on('error', function(result){
         next(null)
     })

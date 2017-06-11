@@ -29,7 +29,7 @@ module.exports = function(req, res, next) {
 
       validateUser(decoded.user, client, function(dbUser){
           if (dbUser) {
-            req.user = dbUser;
+            req.user.user_id = dbUser.user_id;
             next();
           } else {
             // No user with this name exists, respond back with a 401
