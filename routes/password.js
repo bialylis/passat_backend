@@ -129,9 +129,14 @@ var password = {
         var isAdmin = group.admin == user.user_id;
 
         if (isAdmin) {
-            getPasswordsByName(client, group_id, pass_name, function (response) {
+            getPasswordsByName(client, group_id, pass_name, function (list) {
                 console.log("getting passwords by name finished");
-                res.json(response)
+
+                list.forEach(function(entry){
+                    console.log(entry['pass_id']);
+                })
+
+                res.json(list)
             })
         }else {
             res.status(401);
