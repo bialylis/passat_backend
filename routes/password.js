@@ -239,7 +239,7 @@ function getPasswords(client, group_id, user, next){
 
 function getPasswordsByName(client, group_id, pass_name, next){
     var query = client.query(`SELECT pass_id from stored_password WHERE "group" = $1 and pass_name = $2`, [group_id, pass_name]);
-
+    console.log(group_id+" "+pass_name);
     passwords = []
     query.on('error', function (error) {
         console.log(error)
