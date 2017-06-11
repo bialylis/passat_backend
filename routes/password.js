@@ -133,7 +133,8 @@ var password = {
             getPasswordsByName(client, group_id, pass_name, function (list) {
                 console.log("getting passwords by name finished");
                 var failed = false;
-                var result['not_deleted'] = [];
+                var result = [];
+                result['not_deleted'] = [];
                 list.forEach(function(entry){
                     var id = parseInt(entry['pass_id']);
                     console.log(id);
