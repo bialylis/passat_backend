@@ -71,7 +71,7 @@ var password = {
                     if (key_password == null) {
                         throw Error
                     }
-                    console.log(response.password.toString('utf8'))
+                    console.log(key_password)
                     var key = ursa.createPrivateKey(pem, key_password)
 
                     if (response.login != null) {
