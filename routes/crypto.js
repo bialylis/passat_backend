@@ -137,6 +137,12 @@ var crypto = {
 			}
 		})
 
+	},
+	getPrivateKey: function(userid, client, done){
+		getPrivateKey(userid, client, done)
+	},
+	getPublicKey: function(userid, client, done) {
+		getPublicKey(userid, client, done)
 	}
 
 
@@ -162,14 +168,11 @@ function getPrivateKey(userid, client , done) {
 
 function getPublicKey(userid, client, done){
 
-	console.log("getPublicKey " + userid)
 
 	var query = client.query(`SELECT public_key FROM user_account WHERE user_id = ($1)`, [userid])
 	var pem = null
 
 	query.on("row", function(result){
-		console.log(result)
-
 		pem = result.public_key
 
 	})
@@ -202,41 +205,6 @@ function generate(userid, client, encription_pass, done) {
 		console.log("end")
 		done(true)
 	})
-
-
-	// var fs = require('fs');
-	// fs.writeFile("file.pem",pem, function(err) {
-	// fs.writeFile("pub.pem",key.toPublicPem(), function(err) {
-
-	//   key = ursa.createPrivateKey(fs.readFileSync('file.pem'), "pass");
-	//   crt = ursa.createPublicKey(fs.readFileSync('pub.pem'));
-
-	//   console.log('Encrypt with Public');
-	//   msg = crt.encrypt("Everything is going to be 200 OK", 'utf8', 'base64');
-	//   console.log('encrypted', msg, '\n');
-
-	//   console.log('Decrypt with Private');
-	//   msg = key.decrypt(msg, 'base64', 'utf8');
-	//   console.log('decrypted', msg, '\n');
-
-	//   console.log('############################################');
-	//   console.log('Reverse Public -> Private, Private -> Public');
-	//   console.log('############################################\n');
-
-	//   console.log('Encrypt with Private (called public)');
-	//   msg = crt.encrypt("Everything is going to be 200 OK", 'utf8', 'base64');
-	//   console.log('encrypted', msg, '\n');
-
-	//   console.log('Decrypt with Public (called private)');
-	//   msg = key.decrypt(msg, 'base64', 'utf8');
-	//   console.log('decrypted', msg, '\n');
-
-	// }); 
-	// }); 
-
-
-	// done()
-
 }
 
 

@@ -1,3 +1,6 @@
+var crypto  = require('./crypto.js');
+var  ursa = require('ursa')
+
 var password = {
 
     add_group_password: function(req, res){
@@ -6,6 +9,7 @@ var password = {
         var user = req.user;
         var name = req.body.pass_name;
         var login = req.body.encrypted_login;
+        console.log(login)
         var pass = req.body.encrypted_password;
         var note = req.body.note;
         var isAdmin = req.group.admin == user.user_id;
@@ -13,7 +17,7 @@ var password = {
         var user2 = req.body.user
         if (isAdmin) {
             addPassword(client, name, login, pass, note, user2.user_id, group_id, function (success) {
-                console.log("add password")
+                console.log("add password ")
                 if (success) {
                     var response = {
                         success: 'true'
@@ -39,18 +43,57 @@ var password = {
     get_group_password: function(req, res){
         var client = req.app.get('db');
         var pass_id = req.params.passid;
+        var key_password = req.headers.key_password
 
-        getPassword(client, pass_id, function (response) {
-            if (response == null) {
+        var user = req.user
+
+        crypto.getPrivateKey(user.user_id, client, function(pem){
+            if (pem == null) {
                 res.status(400);
                 res.json({
                     "status": 400,
-                    "message": "Can not find password"
+                    "message": "Cant fetch private key"
                 });
-                return;
+                return
             }
-            res.json(response);
+
+            getPassword(client, pass_id, function (response) {
+                if (response == null) {
+                    res.status(400);
+                    res.json({
+                        "status": 400,
+                        "message": "Can not find password"
+                    });
+                    return;
+                }
+
+                try {
+                    if (key_password == null) {
+                        throw Error
+                    }
+                    // console.log(response.login.toString('utf8'))
+                    var key = ursa.createPrivateKey(pem, key_password)
+                    response.login = key.decrypt(response.login.toString('utf8'), 'base64', 'utf8')
+                    response.password = key.decrypt(response.password.toString('utf8'), 'base64', 'utf8')
+                    response.note = key.decrypt(response.note.toString('utf8'), 'base64', 'utf8')
+                    
+                    res.json(response);
+
+                }catch (err){
+                    console.log(err)
+                     res.status(400);
+                     res.json({
+                      'status':400,
+                      "message": "Error decrypting data"
+                    })
+
+                }
+
+
+            })
+
         })
+
 
     },
 
@@ -85,36 +128,58 @@ function getPasswords(client, group_id, user, next){
 
 }
 
-function addPassword(client, pass_name, login, pass, note, owner, group, done){
-    if (group==null){
-        var query = client.query(`INSERT INTO stored_password (login, password, note, owner, pass_name)
-         VALUES ($1, $2, $3, $4, $5)`, [login, pass, note, owner, pass_name]);
+function addPassword(client, pass_name, login_data, pass, note, owner, group, done){
 
-        query.on('error', function (error) {
-            console.log(error);
-            done(false)
-        })
+    addPassword.login_data = login_data
+    addPassword.pass = pass
+    addPassword.note = note
 
-        query.on('end', function (result) {
-            console.log("end");
-            done(true)
-        })
-    }
-    else{
-        var query = client.query(`INSERT INTO stored_password (login, password, note, owner, "group", pass_name)
-         VALUES ($1, $2, $3, $4, $5, $6)`, [login, pass, note, owner, group, pass_name]);
+    crypto.getPublicKey(owner, client, function(pem){
 
-        query.on('error', function(error){
-            console.log(error);
-            done(false)
-        })
+        if (pem == null) {
+            done(false);
+            return;
+        }
 
-        query.on('end', function(result){
-            console.log("end");
-            done(true)
-        })
+        var key = ursa.createPublicKey(pem)
 
-    }
+        var login_data = key.encrypt(addPassword.login_data, 'utf8', 'base64');
+
+        var pass = key.encrypt(addPassword.pass, 'utf8', 'base64');
+        var note = key.encrypt(addPassword.note, 'utf8', 'base64');
+
+        if (group==null){
+            var query = client.query(`INSERT INTO stored_password (login, password, note, owner, pass_name)
+             VALUES ($1, $2, $3, $4, $5)`, [login_data, pass, note, owner, pass_name]);
+
+            query.on('error', function (error) {
+                console.log(error);
+                done(false)
+            })
+
+            query.on('end', function (result) {
+                console.log("end");
+                done(true)
+            })
+        }
+        else{
+            var query = client.query(`INSERT INTO stored_password (login, password, note, owner, "group", pass_name)
+             VALUES ($1, $2, $3, $4, $5, $6)`, [login_data, pass, note, owner, group, pass_name]);
+
+            query.on('error', function(error){
+                console.log(error);
+                done(false)
+            })
+
+            query.on('end', function(result){
+                console.log("end");
+                done(true)
+            })
+
+        }
+
+    })
+
 
 }
 

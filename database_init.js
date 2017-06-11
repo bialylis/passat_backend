@@ -65,9 +65,9 @@ function initializeStoredPasswordTable(err, client, done) {
     }else {
         client.query('CREATE TABLE IF NOT EXISTS stored_password (\
                             pass_id bigserial primary key,\
-                            login character varying(200),\
-                            password character varying(200),\
-                            note character varying(250),\
+                            login bytea,\
+                            password bytea,\
+                            note bytea,\
                             owner integer references user_account(user_id),\
                             "group" integer references "group"(group_id));', function(err, result) {
             done();
@@ -150,10 +150,10 @@ function migration3(err, client, done) {
 }
 
 function connect_and_init(err, client, done) {
-    initializeUserAccountTable(err, client, function() {
+    initializeStoredPasswordTable(err, client, function() {
         initializeGroupTable(err, client, function() {
             initializeMembershipTable(err, client, function(){
-                initializeStoredPasswordTable(err, client, function(){
+                initializeUserAccountTable(err, client, function(){
                     migration1(err, client, function () {
                         migration2(err, client, function () {
                             migration3(err, client, done);
