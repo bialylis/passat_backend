@@ -177,6 +177,7 @@ function getPrivateKey(userid, client , done) {
 		done(null)
 	})
 	query.on("end", function(result){
+		console.log("Get private key \n" + pem.toString("utf8"))
 		done(pem)
 	})
 }
