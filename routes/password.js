@@ -16,30 +16,20 @@ var password = {
 
         var user2 = req.body.user
         if (isAdmin) {
-            validatePassword(client, group_id, name, function (valid) {
-                if(valid){
-                    addPassword(client, name, login, pass, note, user2.user_id, group_id, function (success) {
-                        console.log("add password ")
-                        if (success) {
-                            var response = {
-                                success: 'true'
-                            };
-                            res.json(response);
-                        } else {
-                            res.status(400);
-                            res.json({
-                                'status': 400,
-                                "message": "Database error"
-                            })
-
-                        }
-                    })
-                }
-                else{
+            addPassword(client, name, login, pass, note, user2.user_id, group_id, function (success) {
+                console.log("add password ")
+                if (success) {
+                    var response = {
+                        success: 'true'
+                    };
+                    res.json(response);
+                } else {
+                    res.status(400);
                     res.json({
                         'status': 400,
-                        'message': "Password name already taken"
+                        "message": "Database error"
                     })
+
                 }
             })
 
@@ -49,6 +39,16 @@ var password = {
                 'message': "No credentials"
             })
         }
+    },
+
+    check_name: function (req, res) {
+        var client = req.app.get('db');
+        var group_id = req.params.id;
+        var name = req.headers.pass_name;
+
+        validatePassword(client, group_id, name, function (valid) {
+            res.json(valid);
+        })
     },
 
     get_group_password: function(req, res){
