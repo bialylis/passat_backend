@@ -169,14 +169,19 @@ var password = {
     delete_all_for_user: function(req, res){
         
         var client = req.app.get('db');
-        var userid = req.param.userid;
+        var userid = req.params.userid;
+        
+        // console.log(req)
 
-        var group = req.group.group_id;
-        var isAdmin = group.admin == user.user_id;
+        var group = req.group;
+        var isAdmin = group.admin == req.user.user_id;
 
         if (isAdmin) {
-            query = client.query("DELETE FROM stored_password CASCADE WHERE owner = ($1) AND group = ($2)", [userid, group])
+            console.log(userid)
+            console.log(group.group_id)
+            query = client.query("DELETE FROM stored_password CASCADE WHERE owner = ($1) AND \"group\" = ($2)", [userid, group.group_id])
             query.on("error", function(result){
+                console.log(result)
                 res.status(400);
                 res.json({
                     'status': 400,

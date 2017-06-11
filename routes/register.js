@@ -1,5 +1,5 @@
 var jwt = require('jwt-simple');
-
+var bcrypt = require('bcrypt')
 var register = {
 
   register: function(req, res) {
@@ -19,8 +19,9 @@ var register = {
       return;
     }
     console.log("doing")
+
     // Fire a query to your DB and check if the credentials are valid
-    register.validate(username, password, email, client, function(response){
+    register.validate(username, bcrypt.hashSync(password), email, client, function(response){
 
 
 
