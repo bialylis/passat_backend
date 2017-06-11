@@ -120,7 +120,7 @@ var password = {
         })
     },
 
-    get_password_ids: function(req, res){
+    delete_password_entry: function(req, res){
         var client = req.app.get('db');
         var group_id = req.params.id;
         var pass_name = req.headers.passname;
@@ -132,18 +132,43 @@ var password = {
         if (isAdmin) {
             getPasswordsByName(client, group_id, pass_name, function (list) {
                 console.log("getting passwords by name finished");
-
+                failed = false;
+                not_deleted = []
                 list.forEach(function(entry){
-                    console.log(entry['pass_id']);
-                })
+                    deletePassword(client,entry['pass_id'],function(success){
+                        if(!success){
+                            failed = true;
+                            failed.push(entry['pass_id'])
+                            console.log("Failed to delete pass "+entry['pass_id']);
 
-                res.json(list)
+                        }
+                        else{
+                            console.log("Deleted pass "+entry['pass_id']);
+                        }
+                    })
+
+
+                })
+                if(failed){
+                    res.status(400);
+                    res.json({
+                        'status': 400,
+                        "message": "Could not delete password",
+                        "pass_id": not_deleted
+                    })
+                }
+                else{
+                    res.json({
+                        success: 'true'
+                    });
+                }
+
             })
         }else {
             res.status(401);
             res.json({
                 "status": 401,
-                "message": "User doesnt have permission to get data of these passwords"
+                "message": "User doesnt have permission to delete this password entry"
             });
 
         }
