@@ -5,10 +5,10 @@ var crypto = {
 	generate_new_keypair: function(req, res) {
 		var client = req.app.get('db');
     	var user = req.user;
-    	var encription_pass = req.body.encription_pass;
-    	console.log("encription_pass1 " + encription_pass)
+    	var encryption_pass = req.body.encryption_pass;
+    	console.log("encryption_pass1 " + encryption_pass)
 
-    	generate(user.user_id,client, encription_pass, function(success){
+    	generate(user.user_id,client, encryption_pass, function(success){
 
 
     		console.log("generate")
@@ -44,7 +44,7 @@ var crypto = {
 	decrypt: function(req, res){
 		var client = req.app.get('db');
     	var user = req.user;
-    	var encription_pass = req.body.encription_pass;
+    	var encryption_pass = req.body.encryption_pass;
     	var data = req.body.data
 
     	getPrivateKey(user.user_id, client, function(pem){
@@ -57,7 +57,7 @@ var crypto = {
 
     		}else {
     			try {
-    				var key = ursa.createPrivateKey(pem, encription_pass)
+    				var key = ursa.createPrivateKey(pem, encryption_pass)
     				var decrypted = key.decrypt(data, 'base64', 'utf8')
 		    		var response = {
 		                data: decrypted
@@ -203,12 +203,12 @@ function getPublicKey(userid, client, done){
 
 }
 
-function generate(userid, client, encription_pass, done) {
+function generate(userid, client, encryption_pass, done) {
 
 	key = ursa.generatePrivateKey()
-	pem = key.toEncryptedPrivatePem(encription_pass, "aes-128-cfb", "utf8")
+	pem = key.toEncryptedPrivatePem(encryption_pass, "aes-128-cfb", "utf8")
 
-	console.log("Pass: " + encription_pass)
+	console.log("Pass: " + encryption_pass)
 
 	// public = ursa.createPublicKey(key.toPublicPem())
 	var query = client.query(`UPDATE user_account SET private_key = ($1), public_key = ($2) WHERE user_id = ($3)`, [pem.toString("utf8"), key.toPublicPem(), userid]);
