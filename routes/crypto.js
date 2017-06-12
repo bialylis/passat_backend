@@ -43,7 +43,7 @@ var crypto = {
 	decrypt: function(req, res){
 		var client = req.app.get('db');
     	var user = req.user;
-    	var encription_pass = req.body.encription_pass;
+    	var encryption_pass = req.body.encryption_pass;
     	var data = req.body.data
 
     	getPrivateKey(user.user_id, client, function(pem){
@@ -56,7 +56,7 @@ var crypto = {
 
     		}else {
     			try {
-    				var key = ursa.createPrivateKey(pem, encription_pass)
+    				var key = ursa.createPrivateKey(pem, encryption_pass)
     				var decrypted = key.decrypt(data, 'base64', 'utf8')
 		    		var response = {
 		                data: decrypted

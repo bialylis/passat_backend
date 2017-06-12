@@ -69,7 +69,7 @@ function initializeStoredPasswordTable(err, client, done) {
                             password bytea,\
                             note bytea,\
                             owner integer references user_account(user_id),\
-                            "group" integer references "group"(group_id));', function(err, result) {
+                            "group" integer references "group"(group_id)) ON DELETE CASCADE;', function(err, result) {
             done();
             if (err)
             {
