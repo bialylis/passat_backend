@@ -32,12 +32,23 @@ var password = {
 
                 }
             })
+
         }else{
             res.json({
                 'status': 400,
                 'message': "No credentials"
             })
         }
+    },
+
+    check_name: function (req, res) {
+        var client = req.app.get('db');
+        var group_id = req.params.id;
+        var name = req.headers.pass_name;
+
+        validatePassword(client, group_id, name, function (valid) {
+            res.json(valid);
+        })
     },
 
     get_group_password: function(req, res){
@@ -120,6 +131,31 @@ var password = {
         })
     },
 
+    get_password_ids: function(req, res){
+        var client = req.app.get('db');
+        var group_id = req.params.id;
+        var pass_name = req.headers.passname;
+        var user = req.user;
+        console.log('in');
+        var group = req.group;
+        var isAdmin = group.admin == user.user_id;
+
+        if (isAdmin) {
+            getPasswordsByName(client, group_id, pass_name, function (response) {
+                console.log("getting passwords by name finished");
+                res.json(response)
+            })
+        }else {
+            res.status(401);
+            res.json({
+                "status": 401,
+                "message": "User doesnt have permission to get data of these passwords"
+            });
+
+        }
+
+    },
+
     delete_password_entry: function(req, res){
         var client = req.app.get('db');
         var group_id = req.params.id;
@@ -132,18 +168,21 @@ var password = {
         if (isAdmin) {
             getPasswordsByName(client, group_id, pass_name, function (list) {
                 console.log("getting passwords by name finished");
-                failed = false;
-                not_deleted = []
+                var failed = false;
+                var result = [];
+                result['not_deleted'] = [];
                 list.forEach(function(entry){
-                    deletePassword(client,entry['pass_id'],function(success){
+                    var id = parseInt(entry['pass_id']);
+                    console.log(id);
+                    deletePassword(client,id,function(success){
                         if(!success){
                             failed = true;
-                            failed.push(entry['pass_id'])
-                            console.log("Failed to delete pass "+entry['pass_id']);
+                            result['not_deleted'].push(id)
+                            console.log("Failed to delete pass "+id);
 
                         }
                         else{
-                            console.log("Deleted pass "+entry['pass_id']);
+                            console.log("Deleted pass "+id);
                         }
                     })
 
@@ -151,11 +190,9 @@ var password = {
                 })
                 if(failed){
                     res.status(400);
-                    res.json({
-                        'status': 400,
-                        "message": "Could not delete password",
-                        "pass_id": not_deleted
-                    })
+                    result['status']=400;
+                    result['message']="Could not delete passwords"
+                    res.json(result)
                 }
                 else{
                     res.json({
@@ -380,4 +417,21 @@ function deletePassword(client, pass_id, next){
         next(true)
     })
 }
+
+function validatePassword(client, group_id, pass_name, next){
+    var query = client.query(`SELECT * FROM stored_password WHERE "group" = ($1) AND pass_name = ($2)`, [group_id, pass_name]);
+
+    query.on('end', function(result) {
+        if (result.rowCount > 0) {
+            next(false);
+            return;
+        }
+        next(true);
+    })
+    query.on('error', function(result){
+        console.log("error")
+        next(false);
+    })
+}
+
 module.exports = password;
