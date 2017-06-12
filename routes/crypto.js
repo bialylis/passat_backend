@@ -34,7 +34,7 @@ var crypto = {
 	             res.status(400);
 	             res.json({
 	              'status':400,
-	              "message": "Database error"
+	              "message": "Failed generating new keys"
 	            })
 
     		}
@@ -209,6 +209,11 @@ function generate(userid, client, encryption_pass, done) {
 	pem = key.toEncryptedPrivatePem(encryption_pass, "aes-128-cfb", "utf8")
 
 	console.log("Pass: " + encryption_pass)
+
+	if (encryption_pass == null) {
+		done(false)
+		return
+	}
 
 	// public = ursa.createPublicKey(key.toPublicPem())
 	var query = client.query(`UPDATE user_account SET private_key = ($1), public_key = ($2) WHERE user_id = ($3)`, [pem.toString("utf8"), key.toPublicPem(), userid]);
