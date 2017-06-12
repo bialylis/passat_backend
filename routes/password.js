@@ -47,7 +47,18 @@ var password = {
         var name = req.headers.passname;
 
         validatePassword(client, group_id, name, function (valid) {
-            res.json(valid);
+            if(!valid){
+                res.status(400);
+                res.json({
+                    "status": 400,
+                    "message": "Password name exists"
+                });
+            }
+            else{
+                res.json({
+                    "success": "True"
+                });
+            }
         })
     },
 
