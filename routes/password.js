@@ -44,7 +44,7 @@ var password = {
     check_name: function (req, res) {
         var client = req.app.get('db');
         var group_id = req.params.id;
-        var name = req.headers.pass_name;
+        var name = req.headers.passname;
 
         validatePassword(client, group_id, name, function (valid) {
             res.json(valid);
